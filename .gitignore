@@ -1,0 +1,3 @@
+# ignore komodo ide files
+/.komodotools/*
+minesweeper.mvx.komodoproject
