@@ -121,7 +121,7 @@ MinesweeperGame.prototype.isCellMined = function(cell) {
 MinesweeperGame.prototype.countSurroundingMines = function(cell) {
     
     // Get neighbors cells
-    var neighborsCells = this.getNeighbors(cell);
+    var neighborsCells = this.getNeighbors(cell, false);
     console.log('Quant neighbor:', neighborsCells);
     
     // Sorting
@@ -173,9 +173,10 @@ MinesweeperGame.prototype.countSurroundingMines = function(cell) {
 /**
  * Get neighbors of the cell
  * @param {Cell} cell - Coordinates of a cell
+ * @param {Boolean} cross - Select vertical & horizontal cells only (except corner's cell)
  * @return {Array.<cell>} cells - Neighbors of the cell
  */
-MinesweeperGame.prototype.getNeighbors = function(cell) {
+MinesweeperGame.prototype.getNeighbors = function(cell, cross) {
     
     var cells = [];
     
@@ -199,7 +200,7 @@ MinesweeperGame.prototype.getNeighbors = function(cell) {
     
     // Limit quantity of cells by right and bottom field's borders
     if (x === 8) {
-        endx = 1;
+        endx = 2;
     }
     if (y === 8) {
         endy = 2;
@@ -222,6 +223,17 @@ MinesweeperGame.prototype.getNeighbors = function(cell) {
             break;
         }
     }
+    
+    // Excluding diagonals cells
+    if (cross === true) {
+        for (var i = 0; i < cells.lenght; i++) {
+            if (cells[i].x - cell.x === cells[y] - cell.y) {
+                cells.splice(i, 1);
+            }
+        }
+    }
+
+    
     //console.log(cells);
     return cells
 }
@@ -255,7 +267,7 @@ MinesweeperGame.prototype.openCell = function(cell, recursion) {
     if ( typeof(cell[0]) === 'object' ) {
         cell = cell[0];
     }
-    console.log(this.openCells.length);
+
     if (this.openCells.length == 0) {
         this.digMines(12, cell);
     }
@@ -279,22 +291,25 @@ MinesweeperGame.prototype.openCell = function(cell, recursion) {
     
     // Counting quantity of surrounding mines
     var surroundingMines = this.countSurroundingMines(cell);
-    if (surroundingMines !== 0 && recursion === true) {
-        return false;
-    }
+    //if (surroundingMines !== 0 && recursion === true) {
+    //    return false;
+    //}
     cell.surroundingMines = surroundingMines;
     
     // Add cell to openCells & return true
     this.openCells.push(cell);
     
     // Dispatching new GameEvent
-    this.gameEvent.dispatchEvent(MinesweeperGame.CELL_OPENED, cell);
+    this.gameEvent.dispatchEvent(MinesweeperGame.CELL_OPENED, cell);    
     
-    //// Gather cell's neighbors and launch recursion
-    //var neighbors = this.getNeighbors(cell);
-    //for (var i = 0; i < neighbors.length; i++) {
-    //    this.openCell(neighbors[i], true);
-    //}
+    if (surroundingMines == 0) {
+        // Gather cell's neighbors and launch recursion
+        var neighbors = this.getNeighbors(cell, true);
+        
+        for (var i = 0; i < neighbors.length; i++) {
+            this.openCell(neighbors[i], true);
+        }        
+    }        
     
     return true
 }
