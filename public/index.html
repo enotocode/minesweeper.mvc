@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+    
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Minesweeper.MVC</title>
+
+    <link href="../templates/css/style.css" rel="stylesheet">        
+     
+</head>
+ 
+<body>
+    <h1>Minesweeper.MVC</h1>
+    <div class="container" id="modal-container"></div> 
+</body>
+    
+    <script type="text/x-template"  id="modal-template">
+        <div class="popup-body">
+            <button type="button" id="start-button">Новая игра</button>
+        </div>
+    </script>
+    
+    <script src="../app/Cell.js?f"></script>
+    <script src="../app/ViewHelper.js?f"></script>
+    <script src="../app/MinesweeperGame.js?f"></script>
+    <script src="../app/BrowserView.js?f"></script>
+    <script src="../app/BrowserViewController.js?f"></script>
+    <script src="../app/modalView.js?f"></script>
+    <script src="../app/modalController.js?f"></script>
+    <script src="../app/GameEvent.js?f"></script>
+
+    <script src="../app/ServiceApp.js?f"></script>
+</html>

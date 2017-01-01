@@ -1,0 +1,23 @@
+.field {
+          border: 2px solid #ccc;
+          border-radius: 4px;
+          border-collapse: collapse;
+          width: 300px;
+          height: 300px;
+        }
+        td {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            background-color: pink;
+        }
+.flagged {
+          /*&#9959;*/
+}
+.mined {
+          /*&#9962;*/
+          /*&#9791;*/
+}
+.CELL_OPENED {
+    background-color: white;
+}
