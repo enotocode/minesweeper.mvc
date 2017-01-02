@@ -21,3 +21,11 @@
 .CELL_OPENED {
     background-color: white;
 }
+.CELL_MARKED {
+          background-color: orange;
+}
+.CELL_MARKED:after {
+          content: "\263B";
+          right: -20%;
+          position: relative;
+}
