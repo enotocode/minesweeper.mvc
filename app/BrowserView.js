@@ -124,49 +124,33 @@ BrowserView.prototype.createTable = function() {
     table.innerHTML = tableContent;
     table.id = 'table';
     
-    var that = this;
+    var that = this;   
+
     
-    table.onclick = function(event) {
-        var target = event.target;
-      
-        // цикл двигается вверх от target к родителям до table
-        while (target != table) {
-          if (target.tagName == 'TD') {
-            // нашли элемент, который нас интересует!
+    ViewHelper.addDelegateListener(table, 'TD', 'click', function(target) {
+        
+        var cell = ViewHelper.createCellFromId(target);
             
-            var cell = ViewHelper.createCellFromId(target);
-            
-            that.viewEvent.dispatchEvent(MinesweeperGame.UPDATE_CELL_STATUS, cell );
-            
-            return;
-          }
-          target = target.parentNode;
-        }
-    }
+        that.viewEvent.dispatchEvent(MinesweeperGame.UPDATE_CELL_STATUS, cell );
+        
+    });
     
-    table.oncontextmenu = function(event) {
-        console.log('Right click');
-        var target = event.target;
-      
-        // цикл двигается вверх от target к родителям до table
-        while (target != table) {
-          if (target.tagName == 'TD') {
-            // нашли элемент, который нас интересует!
+    ViewHelper.addDelegateListener(table, 'TD', 'contextmenu', function(target) {
+        
+        var cell = ViewHelper.createCellFromId(target);
             
-            var cell = ViewHelper.createCellFromId(target);
-            
-            that.viewEvent.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
-            
-            return;
-          }
-          target = target.parentNode;
-        }
-    }
+        that.viewEvent.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
+        
+    });
     
     return table;
 }
 
+/**
+ * Marked mines with '*'
+ */
 BrowserView.prototype.showMines = function(mines) {
+    
     for (var i = 0; i < mines.length; i++) {
         
         var id = ViewHelper.createIdFromCoordinates(mines[i]);
@@ -242,31 +226,4 @@ BrowserView.prototype.createStatusBar = function() {
 BrowserView.prototype.insertElement = function (element) {
     var parentElenent = document.querySelector('div[class="container"]');
     parentElenent.appendChild(element);
-}
-
-
-//
-//// Обработчик таблицы
-//document.getElementById('field').onclick = function(event) {  
-//  var target = event.target;  
-//  
-//  // цикл двигается вверх от target к родителям до table
-//  while (target != table) {    
-//    if (target.tagName == 'TD') {
-//      // нашли элемент, который нас интересует!
-//      switchColor(target);
-//      return;
-//    }
-//    target = target.parentNode;
-//  }
-//}
-//
-//// Обработчик кнопки
-//document.getElementById('switchButton').onclick = function(){
-//  var field = document.getElementById('field');
-//  if (hasClass(field, 'invert')) {
-//      removeClass(field, 'invert');
-//  } else {
-//      addClass(field, 'invert');
-//  }
-//}
+};
