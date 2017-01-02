@@ -58,10 +58,8 @@ BrowserView.prototype.updateCellStatus = function(status, cell){
     
     if ( typeof(cell[0]) === 'object' ) {
         cell = cell[0];
-    }
-    
-    //console.log('updateCellStatus:', cell);
-    
+    }    
+   
     var id = ViewHelper.createIdFromCoordinates(cell);
       
     var targetCell = document.getElementById(id);
@@ -70,6 +68,31 @@ BrowserView.prototype.updateCellStatus = function(status, cell){
     targetCell.innerHTML = cell.surroundingMines;
     
     //console.log(cell.x, cell.y, cell.surroundingMines)
+}
+
+/**
+ * Switching DOMElement's status by add or remove class attribute 
+ * @param {constant} status - MinesweeperGame's class constant designating cell's status
+ * @param { ( {x:number, y:number}|Object<x:number, y:number> ) } cell - Coordinates of element
+ */
+BrowserView.prototype.switchCellStatus = function(status, cell){
+    
+    if ( typeof(cell[0]) === 'object' ) {
+        cell = cell[0];
+    }    
+   
+    var id = ViewHelper.createIdFromCoordinates(cell);
+      
+    var targetCell = document.getElementById(id);
+    
+    var hasStatus = ViewHelper.hasClass(targetCell, status);
+    
+    if (hasStatus) {
+        ViewHelper.removeClass(targetCell, status);
+    } else {
+        ViewHelper.addClass(targetCell, status);
+    }
+
 }
 
 BrowserView.prototype.restart = function() {
@@ -114,6 +137,25 @@ BrowserView.prototype.createTable = function() {
             var cell = ViewHelper.createCellFromId(target);
             
             that.viewEvent.dispatchEvent(MinesweeperGame.UPDATE_CELL_STATUS, cell );
+            
+            return;
+          }
+          target = target.parentNode;
+        }
+    }
+    
+    table.oncontextmenu = function(event) {
+        console.log('Right click');
+        var target = event.target;
+      
+        // цикл двигается вверх от target к родителям до table
+        while (target != table) {
+          if (target.tagName == 'TD') {
+            // нашли элемент, который нас интересует!
+            
+            var cell = ViewHelper.createCellFromId(target);
+            
+            that.viewEvent.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
             
             return;
           }
