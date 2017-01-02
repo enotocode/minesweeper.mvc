@@ -29,6 +29,7 @@ MinesweeperGame.UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS';
 MinesweeperGame.CELL_OPENED = 'CELL_OPENED';
 MinesweeperGame.CELL_MINED = 'CELL_MINED';
 MinesweeperGame.CELL_MARKED = 'CELL_MARKED';
+MinesweeperGame.CELL_UNMARKED = 'CELL_UNMARKED';
 
 MinesweeperGame.SHOW_MINES = 'SHOW_MINES';
 MinesweeperGame.RESTART = 'RESTART';
@@ -122,7 +123,7 @@ MinesweeperGame.prototype.countSurroundingMines = function(cell) {
     
     // Get neighbors cells
     var neighborsCells = this.getNeighbors(cell, false);
-    console.log('Quant neighbor:', neighborsCells);
+    //console.log('Quant neighbor:', neighborsCells);
     
     // Sorting
     function sortCell(a, b) {
@@ -241,19 +242,28 @@ MinesweeperGame.prototype.getNeighbors = function(cell, cross) {
 /**
  * Set a flag
  * @param {{x: number, y: number}} cell - Coordinates of a cell
- * @return {(boolean|object)} - Returns true in case setted flag, otherwise cell's coordinates with unsetted flag
  */
 MinesweeperGame.prototype.switchFlag = function(cell) {
     
-    for(var i = 0; i > this.flagedCells.length; i++){
+    if ( typeof(cell[0]) === 'object' ) {
+        cell = cell[0];
+    }
+    
+    if (this.isCellOpen(cell)) {
+        return;
+    }
+    
+    // Does the cell already flagged?
+    for(var i = 0; i < this.flagedCells.length; i++){
         if (this.flagedCells[i].x == cell.x && this.flagedCells[i].y == cell.y) {            
-            return this.flagedCells.splice(i, 1);
+            this.flagedCells.splice(i, 1);
+            this.gameEvent.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
+            return;
         }
     }    
     
-    this.flagedCells.push(cell);
-    
-    return true;
+    this.flagedCells.push(cell);    
+    this.gameEvent.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
 }
 
 /**
@@ -281,9 +291,8 @@ MinesweeperGame.prototype.openCell = function(cell, recursion) {
     // Change game status in case of mine detonating
     if (this.isCellMined(cell)) {
         if ( recursion !== true ) {
-            this.gameStatus = MinesweeperGame.STATUS_LOSE;
-            this.gameEvent.dispatchEvent(MinesweeperGame.UPDATE_GAME_STATUS, this);
-            console.log(MinesweeperGame.STATUS_LOSE);
+            this.lose()
+            return false
         }
         console.log('Watch out!');
         return false
@@ -300,7 +309,12 @@ MinesweeperGame.prototype.openCell = function(cell, recursion) {
     this.openCells.push(cell);
     
     // Dispatching new GameEvent
-    this.gameEvent.dispatchEvent(MinesweeperGame.CELL_OPENED, cell);    
+    this.gameEvent.dispatchEvent(MinesweeperGame.CELL_OPENED, cell);
+    
+    // Check for winning
+    if (this.isWin()) {
+        return;
+    };
     
     if (surroundingMines == 0) {
         // Gather cell's neighbors and launch recursion
@@ -319,13 +333,12 @@ MinesweeperGame.prototype.openCell = function(cell, recursion) {
  */
 MinesweeperGame.prototype.restart = function() {
     
-    this.gameStatus = MinesweeperGame.STATUS_PLAYING;
+    this.updateGameStatus(MinesweeperGame.STATUS_PLAYING); 
     this.openCells = [];
     this.flagedCells = [];
     this.minedCells = [];
     
-    this.gameEvent.dispatchEvent(MinesweeperGame.RESTART, this); 
-    this.gameEvent.dispatchEvent(MinesweeperGame.UPDATE_GAME_STATUS, this);      
+    this.gameEvent.dispatchEvent(MinesweeperGame.RESTART, this);    
 }
 
 /**
@@ -333,7 +346,7 @@ MinesweeperGame.prototype.restart = function() {
  */
 MinesweeperGame.prototype.lose = function() {
     
-    this.gameStatus = MinesweeperGame.STATUS_LOSE;
+    this.updateGameStatus(MinesweeperGame.STATUS_LOSE); 
     
 }
 
@@ -344,5 +357,28 @@ MinesweeperGame.prototype.getMines = function() {
     
     return this.minedCells;
 
+}
+
+/**
+ * Is player win?
+ * @returns {boolean} Returns true in case of winning
+ */
+MinesweeperGame.prototype.isWin = function() {
+    console.log('openCells.length', this.openCells.length, 'minedCells.length', this.minedCells.length);
+    
+    if (this.openCells.length == 100 - this.minedCells.length) {
+        this.updateGameStatus(MinesweeperGame.STATUS_WIN); 
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Updating game status
+ * @param {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)}
+ */
+MinesweeperGame.prototype.updateGameStatus = function(status) {
+    this.gameStatus = status;
+    this.gameEvent.dispatchEvent(MinesweeperGame.UPDATE_GAME_STATUS, status);
 }
 
