@@ -25,7 +25,7 @@ BrowserView.prototype.attach = function(model) {
     this.model.gameEvent.subscribe(GameEvent.UPDATE_GAME_STATUS, function (e) {
         that.updateGameStatus(arguments); 
     });
-}
+};
 
 /**
  * Rendering new game field
@@ -44,15 +44,15 @@ BrowserView.prototype.render = function() {
     this.field = this.createTable();
     this.insertElement(this.field);   
     
-}
+};
 
 BrowserView.prototype.updateGameStatus = function(status){
     this.bar.innerHTML = status;
-}
+};
 /**
  * Updating DOMElement by add class attribute 
  * @param {constant} status - MinesweeperGame's class constant designating cell's status
- * @param { ( {x:number, y:number}|Object<x:number, y:number> ) } cell - Coordinates of element
+ * @param {({x:number, y:number}|Object.<Cell>)} cell - Coordinates of element
  */
 BrowserView.prototype.updateCellStatus = function(status, cell){
     
@@ -68,12 +68,12 @@ BrowserView.prototype.updateCellStatus = function(status, cell){
     targetCell.innerHTML = cell.surroundingMines;
     
     //console.log(cell.x, cell.y, cell.surroundingMines)
-}
+};
 
 /**
  * Switching DOMElement's status by add or remove class attribute 
  * @param {constant} status - MinesweeperGame's class constant designating cell's status
- * @param { ( {x:number, y:number}|Object<x:number, y:number> ) } cell - Coordinates of element
+ * @param {({x:number, y:number}|Object.<Cell>)} cell - Coordinates of element
  */
 BrowserView.prototype.switchCellStatus = function(status, cell){
     
@@ -93,7 +93,7 @@ BrowserView.prototype.switchCellStatus = function(status, cell){
         ViewHelper.addClass(targetCell, status);
     }
 
-}
+};
 
 BrowserView.prototype.restart = function() {
     this.field = this.createTable();
@@ -101,7 +101,7 @@ BrowserView.prototype.restart = function() {
     var content = this.field.innerHTML;
     oldTable.innerHTML = content;
     console.log('table recreate');
-}
+};
 
 /**
  * Generating <table> 10*10 cells
@@ -144,10 +144,11 @@ BrowserView.prototype.createTable = function() {
     });
     
     return table;
-}
+};
 
 /**
  * Marked mines with '*'
+ * @argument {Array.<Cell>} mines - Mined cells
  */
 BrowserView.prototype.showMines = function(mines) {
     
@@ -159,7 +160,7 @@ BrowserView.prototype.showMines = function(mines) {
     
         targetCell.innerHTML = '*';
     }
-}
+};
 
 /**
  * Generate controll buttons
@@ -182,7 +183,7 @@ BrowserView.prototype.createButtons = function() {
     };
     
     return button;
-}
+};
 
 /**
  * Generate controll buttons
@@ -204,7 +205,7 @@ BrowserView.prototype.createMineButton = function() {
     };
     
     return button;
-}
+};
 
 /**
  * Generate status bar
@@ -218,10 +219,11 @@ BrowserView.prototype.createStatusBar = function() {
     bar.innerHTML = 'What are you waiting for?';
     
     return bar;
-}
+};
 
 /**
  * Injection element in DOM
+ * @argument {DONElement} element 
  */
 BrowserView.prototype.insertElement = function (element) {
     var parentElenent = document.querySelector('div[class="container"]');
