@@ -364,8 +364,7 @@ MinesweeperGame.prototype.getMines = function() {
  * @returns {boolean} Returns true in case of winning
  */
 MinesweeperGame.prototype.isWin = function() {
-    console.log('openCells.length', this.openCells.length, 'minedCells.length', this.minedCells.length);
-    
+       
     if (this.openCells.length == 100 - this.minedCells.length) {
         this.updateGameStatus(MinesweeperGame.STATUS_WIN); 
         return true;
