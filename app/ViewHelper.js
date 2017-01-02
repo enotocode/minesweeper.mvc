@@ -35,6 +35,7 @@ ViewHelper.createIdFromCoordinates = function(cell) {
  * @return {boolen}        - Результат проверки
  */
 ViewHelper.hasClass = function(node, klass) {
+    
     var classes = node.className.split(/\s/);
     for(var i = 0; i < classes.length; i++) {
         if (classes[i] == klass) {
@@ -75,7 +76,7 @@ ViewHelper.addClass = function(node, klass) {
  * @return {(DOMNode|null)}    - Возвращает дом-элемент в случае удачи, или null, если не удалось удалить класс
  */
 ViewHelper.removeClass = function(node, klass) {
-    if (hasClass(node, klass)) {
+    if (ViewHelper.hasClass(node, klass)) {
         var regexp = new RegExp('\\b' + klass + '\\b', 'i');
         var className = node.className
         className = className.replace(regexp, "");
