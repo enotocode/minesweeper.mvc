@@ -19,11 +19,20 @@ BrowserView.prototype.attach = function(model) {
     this.model = model;
     var that = this;
     
-    this.model.eventDispatcher.subscribe(MinesweeperGame.OPEN_CELL, function (e) {
-        that.updateCellStatus(arguments); 
+    this.model.eventDispatcher.subscribe(MinesweeperGame.CELL_OPENED, function (status, cell) {
+        that.updateCellStatus(status, cell); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.UPDATE_GAME_STATUS, function (e) {
-        that.updateGameStatus(arguments); 
+    this.model.eventDispatcher.subscribe(MinesweeperGame.UPDATE_GAME_STATUS, function (type, status) {
+        that.updateGameStatus(status); 
+    });
+    this.model.eventDispatcher.subscribe(MinesweeperGame.CELL_MARKED, function (status, cell) {
+        that.switchCellStatus(status, cell); 
+    });
+    this.model.eventDispatcher.subscribe(MinesweeperGame.CELL_UNMARKED, function (status, cell) {
+        that.switchCellStatus(status, cell); 
+    });
+    this.model.eventDispatcher.subscribe(MinesweeperGame.RESTART, function () {
+        that.restart();
     });
 };
 
@@ -46,9 +55,16 @@ BrowserView.prototype.render = function() {
     
 };
 
+/**
+ * Updating status bar
+ * @param {String} status
+ */
 BrowserView.prototype.updateGameStatus = function(status){
+    
     this.bar.innerHTML = status;
+    
 };
+
 /**
  * Updating DOMElement by add class attribute 
  * @param {constant} status - MinesweeperGame's class constant designating cell's status
@@ -94,7 +110,9 @@ BrowserView.prototype.switchCellStatus = function(status, cell){
     }
 
 };
-
+/**
+ * Re-creating game field
+ */
 BrowserView.prototype.restart = function() {
     this.field = this.createTable();
     var oldTable = document.getElementById('table');
@@ -131,7 +149,7 @@ BrowserView.prototype.createTable = function() {
         
         var cell = ViewHelper.createCellFromId(target);
             
-        that.eventDispatcher.dispatchEvent(MinesweeperGame.UPDATE_CELL_STATUS, cell );
+        that.eventDispatcher.dispatchEvent(MinesweeperGame.UPDATE_CELL_STATUS, cell);
         
     });
     

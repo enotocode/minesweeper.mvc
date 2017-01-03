@@ -257,7 +257,7 @@ MinesweeperGame.prototype.switchFlag = function (cell) {
     for (var i = 0; i < this.flagedCells.length; i++) {
         if (this.flagedCells[i].x == cell.x && this.flagedCells[i].y == cell.y) {
             this.flagedCells.splice(i, 1);
-            this.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
+            this.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_UNMARKED, cell);
             return;
         }
     }
