@@ -245,9 +245,9 @@ MinesweeperGame.prototype.getNeighbors = function (cell, cross) {
  */
 MinesweeperGame.prototype.switchFlag = function (cell) {
 
-    if (typeof (cell[0]) === 'object') {
-        cell = cell[0];
-    }
+    //if (typeof (cell[0]) === 'object') {
+    //    cell = cell[0];
+    //}
 
     if (this.isCellOpen(cell)) {
         return;
@@ -274,9 +274,9 @@ MinesweeperGame.prototype.switchFlag = function (cell) {
  */
 MinesweeperGame.prototype.openCell = function (cell, recursion) {
 
-    if (typeof (cell[0]) === 'object') {
-        cell = cell[0];
-    }
+    //if (typeof (cell[0]) === 'object') {
+    //    cell = cell[0];
+    //}
 
     if (this.openCells.length == 0) {
         this.digMines(12, cell);

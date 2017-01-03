@@ -72,9 +72,9 @@ BrowserView.prototype.updateGameStatus = function(status){
  */
 BrowserView.prototype.updateCellStatus = function(status, cell){
     
-    if ( typeof(cell[0]) === 'object' ) {
-        cell = cell[0];
-    }    
+    //if ( typeof(cell[0]) === 'object' ) {
+    //    cell = cell[0];
+    //}    
    
     var id = ViewHelper.createIdFromCoordinates(cell);
       
@@ -93,9 +93,9 @@ BrowserView.prototype.updateCellStatus = function(status, cell){
  */
 BrowserView.prototype.switchCellStatus = function(status, cell){
     
-    if ( typeof(cell[0]) === 'object' ) {
-        cell = cell[0];
-    }    
+    //if ( typeof(cell[0]) === 'object' ) {
+    //    cell = cell[0];
+    //}    
    
     var id = ViewHelper.createIdFromCoordinates(cell);
       
