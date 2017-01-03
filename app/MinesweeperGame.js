@@ -259,7 +259,7 @@ MinesweeperGame.prototype.setFlag = function (cell) {
  * Unset a flag
  * @param {Cell} cell - Coordinates of a cell
  */
-MinesweeperGame.prototypes.usetFlag = function(cell) {           
+MinesweeperGame.prototype.unsetFlag = function(cell) {           
        
     if ( this.isFlagged(cell) ) {
             
@@ -274,7 +274,7 @@ MinesweeperGame.prototypes.usetFlag = function(cell) {
  * @param {Cell} cell - Searching cell
  * @returns {Boolean} - True in case cell is found
  */
-MinesweeperGame.prototypes.isFlagged = function(cell) {
+MinesweeperGame.prototype.isFlagged = function(cell) {
     
     for (var i = 0; i < this.flagedCells.length; i++) {
         
