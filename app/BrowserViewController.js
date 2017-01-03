@@ -20,7 +20,7 @@ function BrowserViewController(view, game) {
     
     // Switching a flag
     this._view.eventDispatcher.subscribe(GameEvent.CELL_MARKED, function(type, cell) {
-        that._game.switchFlag(type, cell);
+        that._game.switchFlag(cell);
     })
 
     
