@@ -1,37 +1,32 @@
 'use strict';
 
 /**
- * Class GameEvent
- * @property {Object} target - Event target
- * @property {Object.<string, Array>} _listeners - Events types and Arrays of functions
+ * GameEvent store type and target of event
+ * transferring to observer when event dispatches
+ * 
+ * @param   {Constant} type - One of the GameEvent constant denoting game's event
+ * @param   {Object} target - Target object of event
+ * 
  */
-function GameEvent() {
-    this._listeners = {};
-}
-
-
-/**
- * Subscribing method
- * @param {function} listener - Functions that handle the event
- * @param {constant} type
-*/
-GameEvent.prototype.subscribe = function(type, listener) {
-    if (! (type in this._listeners) ) {
-        this._listeners[type] = [];
-    }
-    this._listeners[type].push(listener);
+function GameEvent(type, target) {
+    this.type = type;
+    this.target = target;
 }
 
 /**
- * Exec listeners function
- * @param {constant} type - Type of event
- * @param {Object} target - Event target
+ * GameEvent constant describing game's event types
  */
-GameEvent.prototype.dispatchEvent = function(type, target){
+GameEvent.STATUS_WIN = 'STATUS_WIN';
+GameEvent.STATUS_LOSE = 'STATUS_LOSE';
+GameEvent.STATUS_PLAYING = 'STATUS_PLAYING';
 
-    var listeners = this._listeners[type];
-    
-    for (var i = 0; i < listeners.length; i++) {
-        listeners[i](target);
-    }
- }
+GameEvent.UPDATE_CELL_STATUS = 'UPDATE_CELL_STATUS';
+GameEvent.UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS';
+
+GameEvent.CELL_OPENED = 'CELL_OPENED';
+GameEvent.CELL_MINED = 'CELL_MINED';
+GameEvent.CELL_MARKED = 'CELL_MARKED';
+GameEvent.CELL_UNMARKED = 'CELL_UNMARKED';
+
+GameEvent.SHOW_MINES = 'SHOW_MINES';
+GameEvent.RESTART = 'RESTART';
