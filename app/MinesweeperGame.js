@@ -233,58 +233,74 @@ MinesweeperGame.prototype.getNeighbors = function (cell, cross) {
             }
         }
     }
-
-
     //console.log(cells);
     return cells
 }
 
 /**
  * Set a flag
- * @param {{x: number, y: number}} cell - Coordinates of a cell
+ * @param {Cell} cell - Coordinates of a cell
  */
-MinesweeperGame.prototype.switchFlag = function (cell) {
-
-    //if (typeof (cell[0]) === 'object') {
-    //    cell = cell[0];
-    //}
+MinesweeperGame.prototype.setFlag = function (cell) {
 
     if (this.isCellOpen(cell)) {
         return;
     }
 
-    // Does the cell already flagged?
+    if ( ! this.isFlagged(cell) ) {
+            
+        this.flagedCells.push(cell);
+        this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
+        
+    }  
+}
+
+/**
+ * Unset a flag
+ * @param {Cell} cell - Coordinates of a cell
+ */
+MinesweeperGame.prototypes.usetFlag = function(cell) {           
+       
+    if ( this.isFlagged(cell) ) {
+            
+        this.flagedCells.splice(i, 1);
+        this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_UNMARKED, cell) );
+        
+    }    
+}
+
+/**
+ * Search cell among flagged cells
+ * @param {Cell} cell - Searching cell
+ * @returns {Boolean} - True in case cell is found
+ */
+MinesweeperGame.prototypes.isFlagged = function(cell) {
+    
     for (var i = 0; i < this.flagedCells.length; i++) {
+        
         if (this.flagedCells[i].x == cell.x && this.flagedCells[i].y == cell.y) {
-            this.flagedCells.splice(i, 1);
-            this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_UNMARKED, cell) );
-            return;
+            
+            return true;
         }
     }
-
-    this.flagedCells.push(cell);
-    this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
+    
+    return false;
 }
 
 /**
  * Open the cell
  * @param {(Cell|Object<Cell>)} cell - Opening cell
- * @param {boolean} recursion - True if the function called in recursion
- * @return {boolean} - False in case cell is already opened 
+ * @param {Boolean} recursion - True if the function called in recursion
+ * @return {Boolean} - False in case cell is already opened 
  */
 MinesweeperGame.prototype.openCell = function (cell, recursion) {
-
-    //if (typeof (cell[0]) === 'object') {
-    //    cell = cell[0];
-    //}
 
     if (this.openCells.length == 0) {
         this.digMines(12, cell);
     }
-
+    
     // Return false if cell already opened
     if (this.isCellOpen(cell)) {
-        //console.log('Cell is already opened');
         return false;
     }
 
@@ -300,9 +316,6 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
 
     // Counting quantity of surrounding mines
     var surroundingMines = this.countSurroundingMines(cell);
-    //if (surroundingMines !== 0 && recursion === true) {
-    //    return false;
-    //}
     cell.surroundingMines = surroundingMines;
 
     // Add cell to openCells & return true
@@ -310,6 +323,8 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
 
     // Dispatching new eventDispatcher
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_OPENED, cell) );
+    
+    this.unsetFlag(cell);
 
     // Check for winning
     if (this.isWin()) {
