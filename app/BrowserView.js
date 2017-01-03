@@ -6,7 +6,7 @@
  * @property {DOMElement} field  - Game field
  */
 function BrowserView() {
-    this.viewEvent = new GameEvent();
+    this.eventDispatcher = new EventDispatcher();
 };
 
 
@@ -19,10 +19,10 @@ BrowserView.prototype.attach = function(model) {
     this.model = model;
     var that = this;
     
-    this.model.gameEvent.subscribe(GameEvent.OPEN_CELL, function (e) {
+    this.model.eventDispatcher.subscribe(MinesweeperGame.OPEN_CELL, function (e) {
         that.updateCellStatus(arguments); 
     });
-    this.model.gameEvent.subscribe(GameEvent.UPDATE_GAME_STATUS, function (e) {
+    this.model.eventDispatcher.subscribe(MinesweeperGame.UPDATE_GAME_STATUS, function (e) {
         that.updateGameStatus(arguments); 
     });
 };
@@ -131,7 +131,7 @@ BrowserView.prototype.createTable = function() {
         
         var cell = ViewHelper.createCellFromId(target);
             
-        that.viewEvent.dispatchEvent(MinesweeperGame.UPDATE_CELL_STATUS, cell );
+        that.eventDispatcher.dispatchEvent(MinesweeperGame.UPDATE_CELL_STATUS, cell );
         
     });
     
@@ -139,7 +139,7 @@ BrowserView.prototype.createTable = function() {
         
         var cell = ViewHelper.createCellFromId(target);
             
-        that.viewEvent.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
+        that.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
         
     });
     
@@ -178,7 +178,7 @@ BrowserView.prototype.createButtons = function() {
     
     button.onclick = function(event){
         var target = event.target;
-        that.viewEvent.dispatchEvent(MinesweeperGame.RESTART, target);
+        that.eventDispatcher.dispatchEvent(MinesweeperGame.RESTART, target);
         console.log('restart');
     };
     
@@ -201,7 +201,7 @@ BrowserView.prototype.createMineButton = function() {
     
     button.onclick = function(event){
         var target = event.target;
-        that.viewEvent.dispatchEvent(MinesweeperGame.SHOW_MINES, target);
+        that.eventDispatcher.dispatchEvent(MinesweeperGame.SHOW_MINES, target);
     };
     
     return button;

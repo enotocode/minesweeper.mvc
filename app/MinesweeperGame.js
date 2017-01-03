@@ -5,7 +5,7 @@
  * @property {Array.<Cell>} openCells - Opened cells of the gaming field
  * @property {Array.<Cell>} minedCells - Coordinates of mines
  * @property {Array.<Cell>} flagedCells - Coordinates of flagged cells
- * @property {GameEvent} gameEvent - Object of Event
+ * @property {eventDispatcher} eventDispatcher - Object of Event
  */
 function MinesweeperGame() {
 
@@ -13,7 +13,7 @@ function MinesweeperGame() {
     this.openCells = [];
     this.minedCells = [];
     this.flagedCells = [];
-    this.gameEvent = new GameEvent();
+    this.eventDispatcher = new EventDispatcher();
 }
 
 /**
@@ -257,13 +257,13 @@ MinesweeperGame.prototype.switchFlag = function (cell) {
     for (var i = 0; i < this.flagedCells.length; i++) {
         if (this.flagedCells[i].x == cell.x && this.flagedCells[i].y == cell.y) {
             this.flagedCells.splice(i, 1);
-            this.gameEvent.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
+            this.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
             return;
         }
     }
 
     this.flagedCells.push(cell);
-    this.gameEvent.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
+    this.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
 }
 
 /**
@@ -308,8 +308,8 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
     // Add cell to openCells & return true
     this.openCells.push(cell);
 
-    // Dispatching new GameEvent
-    this.gameEvent.dispatchEvent(MinesweeperGame.CELL_OPENED, cell);
+    // Dispatching new eventDispatcher
+    this.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_OPENED, cell);
 
     // Check for winning
     if (this.isWin()) {
@@ -338,7 +338,7 @@ MinesweeperGame.prototype.restart = function () {
     this.flagedCells = [];
     this.minedCells = [];
 
-    this.gameEvent.dispatchEvent(MinesweeperGame.RESTART, this);
+    this.eventDispatcher.dispatchEvent(MinesweeperGame.RESTART, this);
 }
 
 /**
@@ -378,6 +378,6 @@ MinesweeperGame.prototype.isWin = function () {
  */
 MinesweeperGame.prototype.updateGameStatus = function (status) {
     this.gameStatus = status;
-    this.gameEvent.dispatchEvent(MinesweeperGame.UPDATE_GAME_STATUS, status);
+    this.eventDispatcher.dispatchEvent(MinesweeperGame.UPDATE_GAME_STATUS, status);
 }
 
