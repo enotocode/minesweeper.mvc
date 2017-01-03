@@ -26,10 +26,10 @@ BrowserView.prototype.attach = function(model) {
         that.updateGameStatus(status); 
     });
     this.model.eventDispatcher.subscribe( GameEvent.CELL_MARKED, function (status, cell) {
-        that.switchCellStatus(status, cell); 
+        that.setFlag(cell); 
     });
     this.model.eventDispatcher.subscribe( GameEvent.CELL_UNMARKED, function (status, cell) {
-        that.switchCellStatus(status, cell); 
+        that.unsetFlag(cell); 
     });
     this.model.eventDispatcher.subscribe( GameEvent.RESTART, function () {
         that.restart();
@@ -87,29 +87,29 @@ BrowserView.prototype.updateCellStatus = function(status, cell){
 };
 
 /**
- * Switching DOMElement's status by add or remove class attribute 
- * @param {constant} status - MinesweeperGame's class constant designating cell's status
- * @param {({x:number, y:number}|Object.<Cell>)} cell - Coordinates of element
+ * Set flag to cel by add class attribute 
+ * @param {Cell} cell - Target cell
  */
-BrowserView.prototype.switchCellStatus = function(status, cell){
+BrowserView.prototype.setFlag = function(cell){
     
-    //if ( typeof(cell[0]) === 'object' ) {
-    //    cell = cell[0];
-    //}    
-   
-    var id = ViewHelper.createIdFromCoordinates(cell);
-      
+    var id = ViewHelper.createIdFromCoordinates(cell);      
     var targetCell = document.getElementById(id);
     
-    var hasStatus = ViewHelper.hasClass(targetCell, status);
-    
-    if (hasStatus) {
-        ViewHelper.removeClass(targetCell, status);
-    } else {
-        ViewHelper.addClass(targetCell, status);
-    }
-
+    ViewHelper.addClass(targetCell, GameEvent.CELL_MARKED);    
 };
+
+/**
+ * Unset flag to cel by removing class attribute 
+ * @param {Cell} cell - Target cell
+ */
+BrowserView.prototype.unsetFlag = function(cell){
+    
+    var id = ViewHelper.createIdFromCoordinates(cell);      
+    var targetCell = document.getElementById(id);
+    
+    ViewHelper.removeClass(targetCell, GameEvent.CELL_MARKED);    
+};
+
 /**
  * Re-creating game field
  */

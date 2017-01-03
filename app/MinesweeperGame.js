@@ -246,33 +246,45 @@ MinesweeperGame.prototype.setFlag = function (cell) {
     if (this.isCellOpen(cell)) {
         return;
     }
-
-    if ( ! this.isFlagged(cell) ) {
             
-        this.flagedCells.push(cell);
-        this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
+    this.flagedCells.push(cell);
+    this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
+}
+
+/**
+ * Toggle a flag
+ * @param {Cell} cell - Coordinates of a cell
+ */
+MinesweeperGame.prototype.switchFlag = function(cell) {    
+
+    var index = this.isFlagged(cell);
+       
+    if ( index !== null ) {
+            
+        this.unsetFlag(cell, index);
         
-    }  
+    } else {
+        
+        this.setFlag(cell);
+    }
 }
 
 /**
  * Unset a flag
- * @param {Cell} cell - Coordinates of a cell
+ * @param {Cell} cell - Target cell
+ * @param {Number} index - Index of cell in this.flaggedCells array
  */
-MinesweeperGame.prototype.unsetFlag = function(cell) {           
-       
-    if ( this.isFlagged(cell) ) {
-            
-        this.flagedCells.splice(i, 1);
-        this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_UNMARKED, cell) );
-        
-    }    
+MinesweeperGame.prototype.unsetFlag = function(cell, index) {
+           
+    this.flagedCells.splice(index, 1);
+    this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_UNMARKED, cell) );
+  
 }
 
 /**
  * Search cell among flagged cells
  * @param {Cell} cell - Searching cell
- * @returns {Boolean} - True in case cell is found
+ * @returns {Number|null} - Index of call in this.flaggedCells or null if there is not cell in array
  */
 MinesweeperGame.prototype.isFlagged = function(cell) {
     
@@ -280,11 +292,11 @@ MinesweeperGame.prototype.isFlagged = function(cell) {
         
         if (this.flagedCells[i].x == cell.x && this.flagedCells[i].y == cell.y) {
             
-            return true;
+            return i;
         }
     }
     
-    return false;
+    return null;
 }
 
 /**
@@ -294,9 +306,11 @@ MinesweeperGame.prototype.isFlagged = function(cell) {
  * @return {Boolean} - False in case cell is already opened 
  */
 MinesweeperGame.prototype.openCell = function (cell, recursion) {
-
+    
+    // Start the game
     if (this.openCells.length == 0) {
         this.digMines(12, cell);
+        this.updateGameStatus(MinesweeperGame.STATUS_PLAYING);
     }
     
     // Return false if cell already opened
