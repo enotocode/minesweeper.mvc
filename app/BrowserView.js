@@ -19,19 +19,19 @@ BrowserView.prototype.attach = function(model) {
     this.model = model;
     var that = this;
     
-    this.model.eventDispatcher.subscribe(MinesweeperGame.CELL_OPENED, function (status, cell) {
+    this.model.eventDispatcher.subscribe( GameEvent.CELL_OPENED, function (status, cell) {
         that.updateCellStatus(status, cell); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.UPDATE_GAME_STATUS, function (type, status) {
+    this.model.eventDispatcher.subscribe(GameEvent.UPDATE_GAME_STATUS, function (type, status) {
         that.updateGameStatus(status); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.CELL_MARKED, function (status, cell) {
+    this.model.eventDispatcher.subscribe( GameEvent.CELL_MARKED, function (status, cell) {
         that.switchCellStatus(status, cell); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.CELL_UNMARKED, function (status, cell) {
+    this.model.eventDispatcher.subscribe( GameEvent.CELL_UNMARKED, function (status, cell) {
         that.switchCellStatus(status, cell); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.RESTART, function () {
+    this.model.eventDispatcher.subscribe( GameEvent.RESTART, function () {
         that.restart();
     });
 };
@@ -149,7 +149,7 @@ BrowserView.prototype.createTable = function() {
         
         var cell = ViewHelper.createCellFromId(target);
             
-        that.eventDispatcher.dispatchEvent(MinesweeperGame.UPDATE_CELL_STATUS, cell);
+        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.UPDATE_CELL_STATUS, cell) );
         
     });
     
@@ -157,7 +157,7 @@ BrowserView.prototype.createTable = function() {
         
         var cell = ViewHelper.createCellFromId(target);
             
-        that.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
+        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
         
     });
     
@@ -196,7 +196,7 @@ BrowserView.prototype.createButtons = function() {
     
     button.onclick = function(event){
         var target = event.target;
-        that.eventDispatcher.dispatchEvent(MinesweeperGame.RESTART, target);
+        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.RESTART, target) );
         console.log('restart');
     };
     
@@ -219,7 +219,7 @@ BrowserView.prototype.createMineButton = function() {
     
     button.onclick = function(event){
         var target = event.target;
-        that.eventDispatcher.dispatchEvent(MinesweeperGame.SHOW_MINES, target);
+        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.SHOW_MINES, target) );
     };
     
     return button;

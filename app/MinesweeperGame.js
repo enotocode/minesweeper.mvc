@@ -1,7 +1,7 @@
 'use strict';
 /**
  * Constructor of the game
- * @property {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} gameStatus - The game status
+ * @property {( new GameEvent(GameEvent.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} gameStatus - The game status
  * @property {Array.<Cell>} openCells - Opened cells of the gaming field
  * @property {Array.<Cell>} minedCells - Coordinates of mines
  * @property {Array.<Cell>} flagedCells - Coordinates of flagged cells
@@ -22,17 +22,17 @@ function MinesweeperGame() {
 MinesweeperGame.STATUS_WIN = 'STATUS_WIN';
 MinesweeperGame.STATUS_LOSE = 'STATUS_LOSE';
 MinesweeperGame.STATUS_PLAYING = 'STATUS_PLAYING';
-
-MinesweeperGame.UPDATE_CELL_STATUS = 'UPDATE_CELL_STATUS';
-MinesweeperGame.UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS';
-
-MinesweeperGame.CELL_OPENED = 'CELL_OPENED';
-MinesweeperGame.CELL_MINED = 'CELL_MINED';
-MinesweeperGame.CELL_MARKED = 'CELL_MARKED';
-MinesweeperGame.CELL_UNMARKED = 'CELL_UNMARKED';
-
-MinesweeperGame.SHOW_MINES = 'SHOW_MINES';
-MinesweeperGame.RESTART = 'RESTART';
+//
+//MinesweeperGame.UPDATE_CELL_STATUS = 'UPDATE_CELL_STATUS';
+//MinesweeperGame.UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS';
+//
+//MinesweeperGame.CELL_OPENED = 'CELL_OPENED';
+//MinesweeperGame.CELL_MINED = 'CELL_MINED';
+//MinesweeperGame.CELL_MARKED = 'CELL_MARKED';
+//MinesweeperGame.CELL_UNMARKED = 'CELL_UNMARKED';
+//
+//MinesweeperGame.SHOW_MINES = 'SHOW_MINES';
+//MinesweeperGame.RESTART = 'RESTART';
 
 /**
  * Convert DOMElement to cell Object from
@@ -71,7 +71,7 @@ MinesweeperGame.prototype.digMines = function (mines, cell) {
 
 /**
  * Request gaming Status
- * @return {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} - The game status
+ * @return {( new GameEvent(GameEvent.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} - The game status
  */
 MinesweeperGame.prototype.requestStatus = function () {
 
@@ -257,13 +257,13 @@ MinesweeperGame.prototype.switchFlag = function (cell) {
     for (var i = 0; i < this.flagedCells.length; i++) {
         if (this.flagedCells[i].x == cell.x && this.flagedCells[i].y == cell.y) {
             this.flagedCells.splice(i, 1);
-            this.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_UNMARKED, cell);
+            this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_UNMARKED, cell) );
             return;
         }
     }
 
     this.flagedCells.push(cell);
-    this.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_MARKED, cell);
+    this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
 }
 
 /**
@@ -309,7 +309,7 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
     this.openCells.push(cell);
 
     // Dispatching new eventDispatcher
-    this.eventDispatcher.dispatchEvent(MinesweeperGame.CELL_OPENED, cell);
+    this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_OPENED, cell) );
 
     // Check for winning
     if (this.isWin()) {
@@ -338,7 +338,7 @@ MinesweeperGame.prototype.restart = function () {
     this.flagedCells = [];
     this.minedCells = [];
 
-    this.eventDispatcher.dispatchEvent(MinesweeperGame.RESTART, this);
+    this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.RESTART, this) );
 }
 
 /**
@@ -374,10 +374,10 @@ MinesweeperGame.prototype.isWin = function () {
 
 /**
  * Updating game status
- * @param {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)}
+ * @param {( new GameEvent(GameEvent.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)}
  */
 MinesweeperGame.prototype.updateGameStatus = function (status) {
     this.gameStatus = status;
-    this.eventDispatcher.dispatchEvent(MinesweeperGame.UPDATE_GAME_STATUS, status);
+    this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.UPDATE_GAME_STATUS, status) );
 }
 
