@@ -24,12 +24,15 @@ EventDispatcher.prototype.subscribe = function(type, listener) {
 
 /**
  * Exec listeners function
- * @param {constant} type - Type of event
- * @param {Object} target - Event target
+ * @param {GameEvent} event - Store type and target of event
+ * @property {constant} type - Type of event
+ * @property {Object} target - Event target
  */
-EventDispatcher.prototype.dispatchEvent = function(type, target){
+EventDispatcher.prototype.dispatchEvent = function(event){
 
     var listeners = this._listeners[type];
+    var type = event.type;
+    var target = event.target;
     
     for (var i = 0; i < listeners.length; i++) {
         listeners[i](type, target);
