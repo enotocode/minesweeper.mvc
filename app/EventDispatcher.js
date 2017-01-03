@@ -30,9 +30,9 @@ EventDispatcher.prototype.subscribe = function(type, listener) {
  */
 EventDispatcher.prototype.dispatchEvent = function(event){
 
-    var listeners = this._listeners[type];
     var type = event.type;
     var target = event.target;
+    var listeners = this._listeners[type];
     
     for (var i = 0; i < listeners.length; i++) {
         listeners[i](type, target);
