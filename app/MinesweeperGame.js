@@ -1,7 +1,7 @@
 'use strict';
 /**
  * Constructor of the game
- * @property {( new GameEvent(GameEvent.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} gameStatus - The game status
+ * @property {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} gameStatus - The game status
  * @property {Array.<Cell>} openCells - Opened cells of the gaming field
  * @property {Array.<Cell>} minedCells - Coordinates of mines
  * @property {Array.<Cell>} flagedCells - Coordinates of flagged cells
@@ -22,27 +22,12 @@ function MinesweeperGame() {
 MinesweeperGame.STATUS_WIN = 'STATUS_WIN';
 MinesweeperGame.STATUS_LOSE = 'STATUS_LOSE';
 MinesweeperGame.STATUS_PLAYING = 'STATUS_PLAYING';
-//
-//MinesweeperGame.UPDATE_CELL_STATUS = 'UPDATE_CELL_STATUS';
-//MinesweeperGame.UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS';
-//
-//MinesweeperGame.CELL_OPENED = 'CELL_OPENED';
-//MinesweeperGame.CELL_MINED = 'CELL_MINED';
-//MinesweeperGame.CELL_MARKED = 'CELL_MARKED';
-//MinesweeperGame.CELL_UNMARKED = 'CELL_UNMARKED';
-//
-//MinesweeperGame.SHOW_MINES = 'SHOW_MINES';
-//MinesweeperGame.RESTART = 'RESTART';
 
-/**
- * Convert DOMElement to cell Object from
- */
 
 /**
  * Creates and digs mines
  * @param {number} mines - Quantity of creating mines
  * @property {Cell} cell - First opened cell
- * @return {Array.<cell>} minedCells - Mines's coordinates
  */
 MinesweeperGame.prototype.digMines = function (mines, cell) {
 
@@ -66,12 +51,12 @@ MinesweeperGame.prototype.digMines = function (mines, cell) {
         rand = Math.floor(rand);
         return rand;
     }
-    //console.log(this.minedCells);
+
 }
 
 /**
  * Request gaming Status
- * @return {( new GameEvent(GameEvent.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} - The game status
+ * @return {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} - The game status
  */
 MinesweeperGame.prototype.requestStatus = function () {
 
@@ -146,8 +131,6 @@ MinesweeperGame.prototype.countSurroundingMines = function (cell) {
 
     while (i < m && j < n) {
 
-        //console.log(minedCells[i].x, neighborsCells[j].x);
-
         if (minedCells[i].x == neighborsCells[j].x) {
 
             if (minedCells[i].y == neighborsCells[j].y) {
@@ -175,7 +158,7 @@ MinesweeperGame.prototype.countSurroundingMines = function (cell) {
  * Get neighbors of the cell
  * @param {Cell} cell - Coordinates of a cell
  * @param {Boolean} cross - Select vertical & horizontal cells only (except corner's cell)
- * @return {Array.<cell>} cells - Neighbors of the cell
+ * @return {Cell} cells - Neighbors of the cell
  */
 MinesweeperGame.prototype.getNeighbors = function (cell, cross) {
 
@@ -403,10 +386,12 @@ MinesweeperGame.prototype.isWin = function () {
 
 /**
  * Updating game status
- * @param {( new GameEvent(GameEvent.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)}
+ * @param {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)}
  */
 MinesweeperGame.prototype.updateGameStatus = function (status) {
+    
     this.gameStatus = status;
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.UPDATE_GAME_STATUS, status) );
+    
 }
 
