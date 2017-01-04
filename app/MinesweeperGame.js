@@ -5,7 +5,7 @@
  * @property {Array.<Cell>} openCells - Opened cells of the gaming field
  * @property {Array.<Cell>} minedCells - Coordinates of mines
  * @property {Array.<Cell>} flagedCells - Coordinates of flagged cells
- * @property {eventDispatcher} eventDispatcher - Object of Event
+ * @property {eventDispatcher} eventDispatcher - Object of EventDispatcher
  */
 function MinesweeperGame() {
 
@@ -376,7 +376,7 @@ MinesweeperGame.prototype.restart = function () {
 MinesweeperGame.prototype.lose = function () {
 
     this.updateGameStatus(MinesweeperGame.STATUS_LOSE);
-
+    this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.GAME_OVER, this) );
 }
 
 /**
