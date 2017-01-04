@@ -9,16 +9,18 @@ function EventDispatcher() {
     this._listeners = {};
 }
 
-
 /**
  * Subscribing method
  * @param {function} listener - Functions that handle the event
  * @param {constant} type
 */
 EventDispatcher.prototype.subscribe = function(type, listener) {
+   
     if (! (type in this._listeners) ) {
+        
         this._listeners[type] = [];
     }
+    
     this._listeners[type].push(listener);
 }
 
