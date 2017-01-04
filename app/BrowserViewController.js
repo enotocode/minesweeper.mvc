@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * Controller for browserView
+ * 
+ * @param   {BrowserView} view
+ * @param   {MinesweeperGame} game
+ */
 function BrowserViewController(view, game) {
     this._view = view;
     this._game = game;
@@ -29,6 +35,5 @@ function BrowserViewController(view, game) {
         var mines = that._game.getMines();
         that._view.showMines(mines);
     })
-
     
 }
