@@ -16,9 +16,7 @@ function GameEvent(type, target) {
 /**
  * GameEvent constant describing game's event types
  */
-GameEvent.STATUS_WIN = 'STATUS_WIN';
-GameEvent.STATUS_LOSE = 'STATUS_LOSE';
-GameEvent.STATUS_PLAYING = 'STATUS_PLAYING';
+GameEvent.GAME_OVER = 'GAME_OVER';
 
 GameEvent.UPDATE_CELL_STATUS = 'UPDATE_CELL_STATUS';
 GameEvent.UPDATE_GAME_STATUS = 'UPDATE_GAME_STATUS';
