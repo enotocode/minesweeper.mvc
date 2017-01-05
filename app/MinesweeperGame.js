@@ -4,7 +4,7 @@
  * @property {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} gameStatus - The game status
  * @property {Array.<Cell>} openCells - Opened cells of the gaming field
  * @property {Array.<Cell>} minedCells - Coordinates of mines
- * @property {Array.<Cell>} flagedCells - Coordinates of flagged cells
+ * @property {Array.<Cell>} flaggedCells - Coordinates of flagged cells
  * @property {eventDispatcher} eventDispatcher - Object of EventDispatcher
  */
 function MinesweeperGame() {
@@ -12,7 +12,7 @@ function MinesweeperGame() {
     this.gameStatus = MinesweeperGame.STATUS_PLAYING;
     this.openCells = [];
     this.minedCells = [];
-    this.flagedCells = [];
+    this.flaggedCells = [];
     this.eventDispatcher = new EventDispatcher();
 }
 
@@ -230,7 +230,7 @@ MinesweeperGame.prototype.setFlag = function (cell) {
         return;
     }
             
-    this.flagedCells.push(cell);
+    this.flaggedCells.push(cell);
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
 }
 
@@ -259,7 +259,7 @@ MinesweeperGame.prototype.switchFlag = function(cell) {
  */
 MinesweeperGame.prototype.unsetFlag = function(cell, index) {
            
-    this.flagedCells.splice(index, 1);
+    this.flaggedCells.splice(index, 1);
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_UNMARKED, cell) );
   
 }
@@ -271,9 +271,9 @@ MinesweeperGame.prototype.unsetFlag = function(cell, index) {
  */
 MinesweeperGame.prototype.isFlagged = function(cell) {
     
-    for (var i = 0; i < this.flagedCells.length; i++) {
+    for (var i = 0; i < this.flaggedCells.length; i++) {
         
-        if (this.flagedCells[i].x == cell.x && this.flagedCells[i].y == cell.y) {
+        if (this.flaggedCells[i].x == cell.x && this.flaggedCells[i].y == cell.y) {
             
             return i;
         }
@@ -298,7 +298,7 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
     
     // Return false if cell already opened or flagged.
     // With best regards K.O.
-    if (this.isCellOpen(cell) || this.isFlagged(cell) && recursion) {
+    if (this.isCellOpen(cell) || this.isFlagged(cell) !== null ) {
         return false;
     }
 
@@ -322,8 +322,6 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
     // Dispatching new eventDispatcher
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_OPENED, cell) );
     
-    this.unsetFlag(cell);
-
     // Check for winning
     if (this.isWin()) {
         return;
@@ -348,7 +346,7 @@ MinesweeperGame.prototype.restart = function () {
 
     this.updateGameStatus(MinesweeperGame.STATUS_PLAYING);
     this.openCells = [];
-    this.flagedCells = [];
+    this.flaggedCells = [];
     this.minedCells = [];
 
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.RESTART, this) );
