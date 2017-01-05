@@ -11,5 +11,7 @@ var modalView = new ModalView();
 var modalViewController = new ModalController(modalView, mswprGame);
 modalView.attach(mswprGame);
 
-
+// Console controller
+var game = new ConsoleController();
+game.attach(mswprGame);
 
