@@ -6,6 +6,7 @@
  * @property {DOMElement} field  - Game field
  */
 function BrowserView() {
+    
     this.eventDispatcher = new EventDispatcher();
 };
 
