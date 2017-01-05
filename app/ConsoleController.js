@@ -47,6 +47,51 @@ ConsoleController.prototype.attach = function(model) {
 }
 
 /**
+ *
+ */
+ConsoleController.prototype.open = function(cell) {
+    
+    this._model.openCell(cell);
+    
+}
+
+/**
+ *
+ */
+ConsoleController.prototype.setFlag = function(cell) {
+    
+    this._model.setFlag(cell);
+    
+}
+
+/**
+ *
+ */
+ConsoleController.prototype.removeFlag = function(cell) {
+    
+    this._model.unsetFlag(cell);
+    
+}
+
+/**
+ *
+ */
+ConsoleController.prototype.resign = function() {
+    
+    this._model.lose()
+    
+}
+
+/**
+ *
+ */
+ConsoleController.prototype.reset = function() {
+    
+    this._model.restart();
+    
+}
+
+/**
  * Replace character-cell in field
  */
 ConsoleController.prototype.updateCellStatus = function(status, cell){
