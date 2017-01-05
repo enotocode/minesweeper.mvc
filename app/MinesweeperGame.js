@@ -296,8 +296,9 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
         this.updateGameStatus(MinesweeperGame.STATUS_PLAYING);
     }
     
-    // Return false if cell already opened
-    if (this.isCellOpen(cell)) {
+    // Return false if cell already opened or flagged.
+    // With best regards K.O.
+    if (this.isCellOpen(cell) || this.isFlagged(cell) && recursion) {
         return false;
     }
 
