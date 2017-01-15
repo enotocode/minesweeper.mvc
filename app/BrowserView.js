@@ -1,13 +1,20 @@
 'use strict';
 /**
  * Browser View of MinesweeperGame
- * @property {DOMElement} bar  - Status bar
- * @property {DOMElement} button  - Start bar
- * @property {DOMElement} field  - Game field
+ * @property {DOMElement} bar  - Link on Status bar
+ * @property {DOMElement} button  - Link on Start bar
+ * @property {DOMElement} mineButton  - Link on 'show mines' button
+ * @property {DOMElement} field  - Link on Game field
+ * @property {EventDispatcher} eventDispatcher
  */
 function BrowserView() {
     
+    this.bar = null;
+    this.button = null;
+    this.mineButton = null;
+    this.field = null;
     this.eventDispatcher = new EventDispatcher();
+    
 };
 
 
@@ -51,7 +58,7 @@ BrowserView.prototype.render = function() {
     this.bar = this.createStatusBar();
     this.insertElement(this.bar);
     
-    this.field = this.createTable();
+    this.field = this.createField();
     this.insertElement(this.field);   
     
 };
@@ -115,18 +122,17 @@ BrowserView.prototype.unsetFlag = function(cell){
  * Re-creating game field
  */
 BrowserView.prototype.restart = function() {
-    this.field = this.createTable();
-    var oldTable = document.getElementById('table');
-    var content = this.field.innerHTML;
-    oldTable.innerHTML = content;
-    console.log('table recreate');
+    
+    var newField = this.createField();
+    this.field.innerHTML = newField.innerHTML;
+
 };
 
 /**
  * Generating <table> 10*10 cells
  * @return {DOMElement} table - Html code of table
  */
-BrowserView.prototype.createTable = function() {
+BrowserView.prototype.createField = function() {
     
     var tableContent = "";
 
@@ -141,10 +147,9 @@ BrowserView.prototype.createTable = function() {
     var table = document.createElement('table');
     table.className = "table";    
     table.innerHTML = tableContent;
-    table.id = 'table';
+    table.id = 'field';
     
     var that = this;   
-
     
     ViewHelper.addDelegateListener(table, 'TD', 'click', function(target) {
         
