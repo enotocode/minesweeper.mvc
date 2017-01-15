@@ -104,11 +104,20 @@ ViewHelper.addDelegateListener = function(ancestorObj, targetTagName, type, list
     function checkTagName(event) {        
 
         var target = event.target;
-          
+        
+        // ie8 fix for which
+        if (!event.which && event.button) { // если which нет, но есть button... (IE8-)
+            if (event.button & 1) event.which = 1; // левая кнопка
+                else if (event.button & 4) event.which = 2; // средняя кнопка
+                else if (event.button & 2) event.which = 3; // правая кнопка
+            }
+        }        
+        
+        // Delegating event  
         while (target != ancestorObj) {
             
             if (target.tagName === targetTagName) {
-                console.log(event.which);
+
                 if (forGloryOfArgumentsGod && event.which == forGloryOfArgumentsGod ||
                     !(forGloryOfArgumentsGod)) {
                     
