@@ -92,30 +92,32 @@ ViewHelper.removeClass = function(node, klass) {
 /**
  * Add listener to multiple objects by delegation to ancestor
  * @param {NODElem} ancestorObj - Ancestor of NODElements
- * @param {String} tagName - TagName of target element
+ * @param {String} targetTagName - TagName of target element
  * @param {String} type - Trigger event
  * @param {function} listener - Executing function
+ * @param {string} forGloryOfArgumentsGod - Number of mouse button (event.witch) on mousedown
  */
-ViewHelper.addDelegateListener = function(ancestorObj, tagName, type, listener) {
+ViewHelper.addDelegateListener = function(ancestorObj, targetTagName, type, listener, forGloryOfArgumentsGod) {
     
     ancestorObj.addEventListener(type, checkTagName);
     
-    function checkTagName(event) {
-        
-        console.log('checkTagName');
- 
+    function checkTagName(event) {        
+
         var target = event.target;
           
         while (target != ancestorObj) {
             
-            if (target.tagName === tagName) {                
-                
-                listener(target);
-
+            if (target.tagName === targetTagName) {
+                console.log(event.which);
+                if (forGloryOfArgumentsGod && event.which == forGloryOfArgumentsGod ||
+                    !(forGloryOfArgumentsGod)) {
+                    
+                    listener(target);                    
+               
+                }
             }
             
             target = target.parentNode;
-        }
-        
+        }        
     }
 }

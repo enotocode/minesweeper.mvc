@@ -151,21 +151,21 @@ BrowserView.prototype.createField = function() {
     
     var that = this;   
     
-    ViewHelper.addDelegateListener(table, 'TD', 'click', function(target) {
+    ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(target) {
         
         var cell = ViewHelper.createCellFromId(target);
             
         that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.UPDATE_CELL_STATUS, cell) );
         
-    });
+    }, 1 );
     
-    ViewHelper.addDelegateListener(table, 'TD', 'contextmenu', function(target) {
+    ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(target) {
         
         var cell = ViewHelper.createCellFromId(target);
             
         that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
         
-    });
+    }, 3 );
     
     return table;
 };
