@@ -47,30 +47,45 @@ ConsoleController.prototype.attach = function(model) {
 }
 
 /**
- *
+ * @argument {string} coordinates - Format a3, 4b etc
  */
-ConsoleController.prototype.open = function(cell) {
+ConsoleController.prototype.open = function(coordinates) {
     
-    this._model.openCell(cell);
+    var cell = this.createCellFromString(coordinates);
     
+    if (coordinates) {
+        
+        this._model.openCell(cell);
+        
+    }
 }
 
 /**
- *
+ * @argument {string} coordinates - Format a3, 4b etc
  */
-ConsoleController.prototype.setFlag = function(cell) {
+ConsoleController.prototype.setFlag = function(coordinates) {
     
-    this._model.setFlag(cell);
+    var cell = this.createCellFromString(coordinates);
     
+    if (coordinates) {
+        
+        this._model.setFlag(cell);
+        
+    }
 }
 
 /**
- *
+ * @argument {string} coordinates - Format a3, 4b etc
  */
-ConsoleController.prototype.removeFlag = function(cell) {
+ConsoleController.prototype.removeFlag = function(coordinates) {    
     
-    this._model.unsetFlag(cell);
+    var cell = this.createCellFromString(coordinates);
     
+    if (coordinates) {
+        
+        this._model.unsetFlag(cell);
+        
+    }
 }
 
 /**
@@ -89,6 +104,36 @@ ConsoleController.prototype.reset = function() {
     
     this._model.restart();
     
+}
+
+/**
+ * Create Cell object from chess coordinates
+ * 
+ * @argument {string} string - Chess style coordinates a3, b1 etc
+ * @returns {(Cell|null)} cell - Cell object or null in case of wrong coordinates
+ */
+ConsoleController.prototype.createCellFromString = function(string) {
+    
+    var letter = ['A' ,'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        
+    var x = letter.indexOf(string.match("[a-zA-Z]+")[0].toUpperCase());
+    var y = string.match("\\d+")[0];
+    
+    // Show hint in console
+    if (string.length < 2) {
+      console.log("Cell's coordinates must contain at least 2 symbols, ex: a3");
+      return null;
+    }
+    if (x === null) {
+      console.log("Cell's first coordinate must be a letter [a-z], ex: a3");
+      return null;
+    }
+    if (y === null) {
+      console.log("Cell's second coordinate must be a number [0-100], ex: a3");
+      return null;
+    }      
+    
+    return new Cell(x, y);    
 }
 
 /**
