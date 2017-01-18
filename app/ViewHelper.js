@@ -60,7 +60,7 @@ ViewHelper.addClass = function(node, klass) {
         var className = node.className;
         className += " " + klass;
         // Delete space char in beginning and in end of string
-        var regexp = new RegExp('^\\s|\\s$', 'iu');
+        var regexp = new RegExp('^\\s|\\s$');
         className = className.replace(regexp, "");
         node.className = className;
         return node;
