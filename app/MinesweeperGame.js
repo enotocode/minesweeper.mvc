@@ -19,9 +19,9 @@ var Cell = require('./Cell');
 function MinesweeperGame() {
 
     this.gameStatus = MinesweeperGame.STATUS_PLAYING;
-    this.openCells = [];
-    this.minedCells = [];
-    this.flaggedCells = [];
+    this._openCells = [];
+    this._minedCells = [];
+    this._flaggedCells = [];
     this.eventDispatcher = new EventDispatcher();
 }
 
@@ -40,7 +40,7 @@ MinesweeperGame.STATUS_PLAYING = 'STATUS_PLAYING';
  */
 MinesweeperGame.prototype.digMines = function (mines, cell) {
 
-    this.minedCells = [];
+    this._minedCells = [];
 
     for (var i = 0; i < mines; i++) {
         do {
@@ -51,7 +51,7 @@ MinesweeperGame.prototype.digMines = function (mines, cell) {
 
             // If minedCell coincides with opened cell or cell is already mined
         } while (x == cell.x && y == cell.y || cellIsMined);
-        this.minedCells.push(minedCell);
+        this._minedCells.push(minedCell);
     }
 
     // Randomize coordinates
@@ -79,9 +79,9 @@ MinesweeperGame.prototype.requestStatus = function () {
  */
 MinesweeperGame.prototype.isCellOpen = function (cell) {
 
-    for (var i = 0; i < this.openCells.length; i++) {
-        if (this.openCells[i].x == cell.x &&
-            this.openCells[i].y == cell.y) {
+    for (var i = 0; i < this._openCells.length; i++) {
+        if (this._openCells[i].x == cell.x &&
+            this._openCells[i].y == cell.y) {
             return true;
         }
     }
@@ -96,11 +96,11 @@ MinesweeperGame.prototype.isCellOpen = function (cell) {
 MinesweeperGame.prototype.isCellMined = function (cell) {
     //console.log(cell);
 
-    for (var i = 0; i < this.minedCells.length; i++) {
-        //console.log(this.minedCells[i].x, cell.x);
-        //console.log(this.minedCells[i].y, cell.y);
-        if (this.minedCells[i].x == cell.x &&
-            this.minedCells[i].y == cell.y) {
+    for (var i = 0; i < this._minedCells.length; i++) {
+        //console.log(this._minedCells[i].x, cell.x);
+        //console.log(this._minedCells[i].y, cell.y);
+        if (this._minedCells[i].x == cell.x &&
+            this._minedCells[i].y == cell.y) {
             return true;
         }
     }
@@ -128,11 +128,11 @@ MinesweeperGame.prototype.countSurroundingMines = function (cell) {
         return xdif;
     }
 
-    var minedCells = this.minedCells.sort(sortCell);
+    var minedCells = this._minedCells.sort(sortCell);
     neighborsCells.sort(sortCell);
 
     // Calculating intersection
-    var m = this.minedCells.length;
+    var m = this._minedCells.length;
     var n = neighborsCells.length;
     var i = 0;
     var j = 0;
@@ -239,7 +239,7 @@ MinesweeperGame.prototype.setFlag = function (cell) {
         return;
     }
             
-    this.flaggedCells.push(cell);
+    this._flaggedCells.push(cell);
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
 }
 
@@ -249,7 +249,7 @@ MinesweeperGame.prototype.setFlag = function (cell) {
  */
 MinesweeperGame.prototype.switchFlag = function(cell) {    
 
-    var index = this.isFlagged(cell);
+    var index = this.getIndexOfFlagedCell(cell);
        
     if ( index !== null ) {
             
@@ -264,11 +264,11 @@ MinesweeperGame.prototype.switchFlag = function(cell) {
 /**
  * Unset a flag
  * @param {Cell} cell - Target cell
- * @param {Number} index - Index of cell in this.flaggedCells array
+ * @param {Number} index - Index of cell in this._flaggedCells array
  */
 MinesweeperGame.prototype.unsetFlag = function(cell, index) {
            
-    this.flaggedCells.splice(index, 1);
+    this._flaggedCells.splice(index, 1);
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_UNMARKED, cell) );
   
 }
@@ -276,20 +276,21 @@ MinesweeperGame.prototype.unsetFlag = function(cell, index) {
 /**
  * Search cell among flagged cells
  * @param {Cell} cell - Searching cell
- * @returns {Number|null} - Index of call in this.flaggedCells or null if there is not cell in array
+ * @returns {Number|null} - Index of cell in this._flaggedCells or null if there is not cell in array
  */
-MinesweeperGame.prototype.isFlagged = function(cell) {
+MinesweeperGame.prototype.getIndexOfFlagedCell = function(cell) {
     
-    for (var i = 0; i < this.flaggedCells.length; i++) {
+    for (var i = 0; i < this._flaggedCells.length; i++) {
         
-        if (this.flaggedCells[i].x == cell.x && this.flaggedCells[i].y == cell.y) {
+        if (this._flaggedCells[i].x == cell.x && this._flaggedCells[i].y == cell.y) {
             
-            return i;
+            return true;
         }
     }
     
     return null;
 }
+
 
 /**
  * Open the cell
@@ -300,14 +301,12 @@ MinesweeperGame.prototype.isFlagged = function(cell) {
 MinesweeperGame.prototype.openCell = function (cell, recursion) {
     
     // Start the game
-    if (this.openCells.length == 0) {
+    if (this._openCells.length == 0) {
         this.digMines(12, cell);
         this.updateGameStatus(MinesweeperGame.STATUS_PLAYING);
     }
     
-    // Return false if cell already opened or flagged.
-    // With best regards K.O.
-    if (this.isCellOpen(cell) || this.isFlagged(cell) !== null ) {
+    if (this.isCellOpen(cell) || this.getIndexOfFlagedCell(cell) !== null ) {
         return false;
     }
 
@@ -325,8 +324,8 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
     var surroundingMines = this.countSurroundingMines(cell);
     cell.surroundingMines = surroundingMines;
 
-    // Add cell to openCells & return true
-    this.openCells.push(cell);
+    // Add cell to openCells
+    this._openCells.push(cell);
 
     // Dispatching new eventDispatcher
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_OPENED, cell) );
@@ -354,9 +353,9 @@ MinesweeperGame.prototype.openCell = function (cell, recursion) {
 MinesweeperGame.prototype.restart = function () {
 
     this.updateGameStatus(MinesweeperGame.STATUS_PLAYING);
-    this.openCells = [];
-    this.flaggedCells = [];
-    this.minedCells = [];
+    this._openCells = [];
+    this._flaggedCells = [];
+    this._minedCells = [];
 
     this.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.RESTART, this) );
 }
@@ -375,7 +374,7 @@ MinesweeperGame.prototype.lose = function () {
  */
 MinesweeperGame.prototype.getMines = function () {
 
-    return this.minedCells;
+    return this._minedCells;
 
 }
 
@@ -385,7 +384,7 @@ MinesweeperGame.prototype.getMines = function () {
  */
 MinesweeperGame.prototype.isWin = function () {
 
-    if (this.openCells.length == 100 - this.minedCells.length) {
+    if (this._openCells.length == 100 - this._minedCells.length) {
         this.updateGameStatus(MinesweeperGame.STATUS_WIN);
         return true;
     }
