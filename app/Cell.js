@@ -1,5 +1,8 @@
 'use strict';
 
+// Export the class
+module.exports = Cell;
+
 /**
  * Cell class
  * 

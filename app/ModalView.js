@@ -1,5 +1,12 @@
 'use strict';
 
+// Export the class
+module.exports = ModalView;
+
+// Dependencies
+var GameEvent = require('./GameEvent');
+var EventDispatcher = require('./EventDispatcher');
+
 /**
  * Modal view
  * @property {DOMElement} _modalWindow - Modal window
@@ -7,7 +14,7 @@
  */
 function ModalView() {
 
-    this._modalWindow = undefined;
+    this._modalWindow = undefined;   
     this.eventDispatcher = new EventDispatcher();
     
 }

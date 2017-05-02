@@ -1,5 +1,11 @@
 'use strict';
 
+// Export the class
+module.exports = ModalController;
+
+// Dependencies
+var GameEvent = require('./GameEvent');
+
 /**
  * Controller for modalView
  * 

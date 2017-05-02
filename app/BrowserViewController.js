@@ -1,5 +1,12 @@
 'use strict';
 
+// Export the class
+module.exports = BrowserViewController;
+
+// Dependencies
+var GameEvent = require('./GameEvent');
+
+
 /**
  * Controller for browserView
  * 

@@ -1,5 +1,11 @@
 'use strict';
 
+// Export the class
+module.exports = ConsoleController;
+
+// Dependencies
+var GameEvent = require('./GameEvent');
+
 /**
  * Console controller class
  * 

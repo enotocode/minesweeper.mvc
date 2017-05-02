@@ -1,4 +1,13 @@
 'use strict';
+
+// Export the class
+module.exports = MinesweeperGame;
+
+// Dependencies
+var GameEvent = require('./GameEvent');
+var EventDispatcher = require('./EventDispatcher');
+var Cell = require('./Cell');
+
 /**
  * Constructor of the game
  * @property {(MinesweeperGame.STATUS_WIN|MinesweeperGame.STATUS_LOSE|MinesweeperGame.STATUS_PLAYING)} gameStatus - The game status

@@ -1,4 +1,13 @@
 'use strict';
+
+// Export the class
+module.exports = BrowserView;
+
+// Dependencies
+var GameEvent = require('./GameEvent');
+var ViewHelper = require('./ViewHelper');    
+var EventDispatcher = require('./EventDispatcher');
+
 /**
  * Browser View of MinesweeperGame
  * @property {DOMElement} bar  - Link on Status bar

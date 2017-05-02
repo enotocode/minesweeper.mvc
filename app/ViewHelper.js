@@ -1,5 +1,13 @@
 'use strict';
 
+// Export the class
+module.exports = ViewHelper;
+
+// Dependencies
+var Cell = require('./Cell');
+var eventListenerPolyfill = require('../lib/eventListener.polyfill').eventListenerPolyfill();
+
+
 function ViewHelper() {}
 
 /**
@@ -10,9 +18,9 @@ function ViewHelper() {}
 ViewHelper.createCellFromId = function(domElement) {
 
     var id = domElement.id;    
-    var arrayOfCoordinates = id.split(/\D/);
-    
-    var cell = new Cell(arrayOfCoordinates[1], arrayOfCoordinates[2]);    
+    var arrayOfCoordinates = id.split(/\D/);   
+
+    var cell = new Cell(arrayOfCoordinates[1], arrayOfCoordinates[2]); 
     
     return  cell;
 }

@@ -1,5 +1,8 @@
 'use strict';
 
+// Export the class
+module.exports = EventDispatcher;
+ 
 /**
  * Class EventDispatcher
  * @property {Object} target - Event target

@@ -1,5 +1,9 @@
 'use strict';
 
+// Export the class
+module.exports = GameEvent;
+
+
 /**
  * GameEvent store type and target of event
  * transferring to observer when event dispatches
