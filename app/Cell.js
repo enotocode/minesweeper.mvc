@@ -14,6 +14,5 @@ module.exports = Cell;
 function Cell(x, y) {
     this.x = x;
     this.y = y;
-    this.mine = false;
     this.surroundingMines = null;
 }
