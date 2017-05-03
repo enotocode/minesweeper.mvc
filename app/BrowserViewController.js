@@ -20,7 +20,7 @@ function BrowserViewController(view, game) {
     var that = this;
     
     // Restart Game
-    this._view.eventDispatcher.subscribe(GameEvent.RESTART, function() {
+    this._view.eventDispatcher.subscribe(BrowserView.EVENT_BUTTON_RESTART_CLICK, function() {
         that._game.restart();
     })
 
@@ -38,7 +38,7 @@ function BrowserViewController(view, game) {
 
     
     // Show mines
-    this._view.eventDispatcher.subscribe(GameEvent.SHOW_MINES, function() {
+    this._view.eventDispatcher.subscribe(BrowserView.EVENT_BUTTON_SHOW_MINES_CLICK, function() {
         var mines = that._game.getMines();
         that._view.showMines(mines);
     })

@@ -31,7 +31,8 @@ function BrowserView() {
  */
 BrowserView.EVENT_CELL_CLICK_LEFT = 'EVENT_CELL_CLICK_LEFT';
 BrowserView.EVENT_CELL_CLICK_RIGHT = 'EVENT_CELL_CLICK_RIGHT';
-
+BrowserView.EVENT_BUTTON_RESTART_CLICK = 'EVENT_BUTTON_RESTART_CLICK';
+BrowserView.EVENT_BUTTON_SHOW_MINES_CLICK = 'EVENT_BUTTON_SHOW_MINES_CLICK';
 
 /**
  * Attaching model and subscribing for events
@@ -217,7 +218,7 @@ BrowserView.prototype.createButtons = function() {
     
     button.onclick = function(event){
         var target = event.target;
-        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.RESTART, target) );
+        that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_BUTTON_RESTART_CLICK, target) );
         console.log('restart');
     };
     
@@ -240,7 +241,7 @@ BrowserView.prototype.createMineButton = function() {
     
     button.onclick = function(event){
         var target = event.target;
-        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.SHOW_MINES, target) );
+        that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_BUTTON_SHOW_MINES_CLICK, target) );
     };
     
     return button;
