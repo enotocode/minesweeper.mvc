@@ -13,7 +13,7 @@ var EventDispatcher = require('./EventDispatcher');
  * @property {DOMElement} bar  - Link on Status bar
  * @property {DOMElement} button  - Link on Start bar
  * @property {DOMElement} mineButton  - Link on 'show mines' button
- * @property {DOMElement} field  - Link on Game field
+ * @property {DOMElement} field  - Text field
  * @property {EventDispatcher} eventDispatcher
  */
 function BrowserView() {
@@ -25,6 +25,12 @@ function BrowserView() {
     this.eventDispatcher = new EventDispatcher();
     
 };
+
+/**
+ * Event types
+ */
+BrowserView.EVENT_CELL_CLICK_LEFT = 'EVENT_CELL_CLICK_LEFT';
+BrowserView.EVENT_CELL_CLICK_RIGHT = 'EVENT_CELL_CLICK_RIGHT';
 
 
 /**
@@ -164,7 +170,7 @@ BrowserView.prototype.createField = function() {
         
         var cell = ViewHelper.createCellFromId(target);
             
-        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.UPDATE_CELL_STATUS, cell) );
+        that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_CELL_CLICK_LEFT, cell) );
         
     }, 1 );
     
@@ -172,7 +178,7 @@ BrowserView.prototype.createField = function() {
         
         var cell = ViewHelper.createCellFromId(target);
             
-        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.CELL_MARKED, cell) );
+        that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_CELL_CLICK_RIGHT, cell) );
         
     }, 3 );
     

@@ -5,7 +5,7 @@ module.exports = BrowserViewController;
 
 // Dependencies
 var GameEvent = require('./GameEvent');
-
+var BrowserView = require('./BrowserView');
 
 /**
  * Controller for browserView
@@ -26,13 +26,13 @@ function BrowserViewController(view, game) {
 
     
     // Open cell 
-    this._view.eventDispatcher.subscribe(GameEvent.UPDATE_CELL_STATUS, function(type, cell) {
+    this._view.eventDispatcher.subscribe(BrowserView.EVENT_CELL_CLICK_LEFT, function(type, cell) {
         that._game.openCell(cell);         
     })
 
     
     // Switching a flag
-    this._view.eventDispatcher.subscribe(GameEvent.CELL_MARKED, function(type, cell) {
+    this._view.eventDispatcher.subscribe(BrowserView.EVENT_CELL_CLICK_RIGHT, function(type, cell) {
         that._game.switchFlag(cell);
     })
 
