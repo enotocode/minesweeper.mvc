@@ -6,7 +6,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 module.exports = {
     entry: "./app/initGame",
     output: {
-        filename: "./public/build.js",
+        filename: "./build.js",
         library: "MinesweeperGame"
     },
     
