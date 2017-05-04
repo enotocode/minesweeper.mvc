@@ -200,7 +200,6 @@ BrowserView.prototype.createButtons = function() {
     var button = document.createElement('button');
     
     button.type = 'button';    
-    button.id = 'new-game';
     button.class = 'button control';
     button.innerHTML = 'New Game';
     
@@ -223,7 +222,6 @@ BrowserView.prototype.createMineButton = function() {
     var button = document.createElement('button');
     
     button.type = 'button';    
-    button.id = 'show-mines';
     button.class = 'button control';
     button.innerHTML = 'Show mines';
     
@@ -243,8 +241,7 @@ BrowserView.prototype.createMineButton = function() {
 BrowserView.prototype.createStatusBar = function() {
     
     var bar = document.createElement('div');    
-  
-    bar.id = 'status-bar';
+
     bar.class = 'status-bar';
     bar.innerHTML = 'What are you waiting for?';
     
