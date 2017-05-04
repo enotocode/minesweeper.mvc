@@ -7,32 +7,10 @@ module.exports = ViewHelper;
 var Cell = require('./Cell');
 var eventListenerPolyfill = require('../lib/eventListener.polyfill').eventListenerPolyfill();
 
-
+/**
+ * Static class with some helpful function for BrowserView
+ */
 function ViewHelper() {}
-
-/**
- * Create Cell from extracted cell's coordinates from DOMElement's id=x0y3
- * @param {DOMElement} DOMElement - Element containing id with coordinates
- * @return {cell}  - Cell
- */
-ViewHelper.createCellFromId = function(domElement) {
-
-    var id = domElement.id;    
-    var arrayOfCoordinates = id.split(/\D/);   
-
-    var cell = new Cell(arrayOfCoordinates[1], arrayOfCoordinates[2]); 
-    
-    return  cell;
-}
-
-/**
- * Create id with coordinates of Cell 
- * @param {Cell} cell - Cell object
- * @return {string} - Cell's id with coordinates 'id=x0y3'
- */
-ViewHelper.createIdFromCoordinates = function(cell) {
-    return 'x' + cell.x + 'y' + cell.y;
-}
 
 
 /**
@@ -103,7 +81,7 @@ ViewHelper.removeClass = function(node, klass) {
  * @param {String} targetTagName - TagName of target element
  * @param {String} type - Trigger event
  * @param {function} listener - Executing function
- * @param {string} forGloryOfArgumentsGod - Number of mouse button (event.witch) on mousedown
+ * @param {string} forGloryOfArgumentsGod - Number which mouse button (event.which) on mousedown
  */
 ViewHelper.addDelegateListener = function(ancestorObj, targetTagName, type, listener, forGloryOfArgumentsGod) {
     
@@ -119,7 +97,6 @@ ViewHelper.addDelegateListener = function(ancestorObj, targetTagName, type, list
             else if (event.button & 4) event.which = 2; // средняя кнопка
             else if (event.button & 2) event.which = 3; // правая кнопка
         }
-      
         
         // Delegating event  
         while (target != ancestorObj) {
