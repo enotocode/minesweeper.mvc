@@ -7,6 +7,8 @@ module.exports = BrowserView;
 var GameEvent = require('./GameEvent');
 var ViewHelper = require('./ViewHelper');    
 var EventDispatcher = require('./EventDispatcher');
+var MinesweeperGame = require('./MinesweeperGame');
+var Cell = require('./Cell');
 
 /**
  * Browser View of MinesweeperGame
@@ -27,7 +29,7 @@ function BrowserView() {
 };
 
 /**
- * Event types
+ * Event's types
  */
 BrowserView.EVENT_CELL_CLICK_LEFT = 'EVENT_CELL_CLICK_LEFT';
 BrowserView.EVENT_CELL_CLICK_RIGHT = 'EVENT_CELL_CLICK_RIGHT';
@@ -43,19 +45,19 @@ BrowserView.prototype.attach = function(model) {
     this.model = model;
     var that = this;
     
-    this.model.eventDispatcher.subscribe( GameEvent.CELL_OPENED, function (status, cell) {
-        that.updateCellStatus(status, cell); 
+    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_OPENED, function (status, cell) {
+        that.openCell(status, cell); 
     });
-    this.model.eventDispatcher.subscribe(GameEvent.UPDATE_GAME_STATUS, function (type, status) {
+    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, function (type, status) {
         that.updateGameStatus(status); 
     });
-    this.model.eventDispatcher.subscribe( GameEvent.CELL_MARKED, function (status, cell) {
+    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_MARKED, function (status, cell) {
         that.setFlag(cell); 
     });
-    this.model.eventDispatcher.subscribe( GameEvent.CELL_UNMARKED, function (status, cell) {
+    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_UNMARKED, function (status, cell) {
         that.unsetFlag(cell); 
     });
-    this.model.eventDispatcher.subscribe( GameEvent.RESTART, function () {
+    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_GAME_RESTART, function () {
         that.restart();
     });
 };
@@ -85,8 +87,7 @@ BrowserView.prototype.render = function() {
  */
 BrowserView.prototype.updateGameStatus = function(status){
     
-    this.bar.innerHTML = status;
-    
+    this.bar.innerHTML = status;    
 };
 
 /**
@@ -94,20 +95,13 @@ BrowserView.prototype.updateGameStatus = function(status){
  * @param {constant} status - MinesweeperGame's class constant designating cell's status
  * @param {({x:number, y:number}|Object.<Cell>)} cell - Coordinates of element
  */
-BrowserView.prototype.updateCellStatus = function(status, cell){
+BrowserView.prototype.openCell = function(status, cell){
     
-    //if ( typeof(cell[0]) === 'object' ) {
-    //    cell = cell[0];
-    //}    
-   
-    var id = ViewHelper.createIdFromCoordinates(cell);
-      
-    var targetCell = document.getElementById(id);
+    var targetCell = this.field.rows[cell.y].cells[cell.x];
     
-    ViewHelper.addClass(targetCell, status);
+    ViewHelper.addClass(targetCell, 'CELL_OPENED');
     targetCell.innerHTML = cell.surroundingMines;
     
-    //console.log(cell.x, cell.y, cell.surroundingMines)
 };
 
 /**
@@ -115,11 +109,9 @@ BrowserView.prototype.updateCellStatus = function(status, cell){
  * @param {Cell} cell - Target cell
  */
 BrowserView.prototype.setFlag = function(cell){
-    
-    var id = ViewHelper.createIdFromCoordinates(cell);      
-    var targetCell = document.getElementById(id);
-    
-    ViewHelper.addClass(targetCell, GameEvent.CELL_MARKED);    
+      
+    var targetCell = this.field.rows[cell.y].cells[cell.x];
+    ViewHelper.addClass(targetCell, 'CELL_MARKED');
 };
 
 /**
@@ -127,11 +119,9 @@ BrowserView.prototype.setFlag = function(cell){
  * @param {Cell} cell - Target cell
  */
 BrowserView.prototype.unsetFlag = function(cell){
-    
-    var id = ViewHelper.createIdFromCoordinates(cell);      
-    var targetCell = document.getElementById(id);
-    
-    ViewHelper.removeClass(targetCell, GameEvent.CELL_MARKED);    
+     
+    var targetCell = this.field.rows[cell.y].cells[cell.x];    
+    ViewHelper.removeClass(targetCell, 'CELL_MARKED');    
 };
 
 /**
@@ -155,7 +145,7 @@ BrowserView.prototype.createField = function() {
     for (var i = 0; i < 10; i++) {
         tableContent += "<tr>";
         for (var j = 0; j < 10; j++) {
-            tableContent += "<td id=x" + j + "y"+ i + "></td>";        
+            tableContent += "<td></td>";        
         }
         tableContent += "</tr>";       
     }
@@ -167,17 +157,17 @@ BrowserView.prototype.createField = function() {
     
     var that = this;   
     
-    ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(target) {
+    ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(targetTD) {
         
-        var cell = ViewHelper.createCellFromId(target);
+        var cell = new Cell(targetTD.cellIndex, targetTD.parentElement.rowIndex);
             
         that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_CELL_CLICK_LEFT, cell) );
         
     }, 1 );
     
-    ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(target) {
+    ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(targetTD) {
         
-        var cell = ViewHelper.createCellFromId(target);
+        var cell = new Cell(targetTD.cellIndex, targetTD.parentElement.rowIndex);
             
         that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_CELL_CLICK_RIGHT, cell) );
         
@@ -192,18 +182,18 @@ BrowserView.prototype.createField = function() {
  */
 BrowserView.prototype.showMines = function(mines) {
     
-    for (var i = 0; i < mines.length; i++) {
-        
-        var id = ViewHelper.createIdFromCoordinates(mines[i]);
+    for (var i = 0; i < mines.length; i++) {        
+ 
+        var cell = mines[i];
       
-        var targetCell = document.getElementById(id);
+        var targetCell = this.field.rows[cell.y].cells[cell.x];
     
         targetCell.innerHTML = '*';
     }
 };
 
 /**
- * Generate controll buttons
+ * Generate control buttons
  */
 BrowserView.prototype.createButtons = function() {
     
@@ -211,7 +201,7 @@ BrowserView.prototype.createButtons = function() {
     
     button.type = 'button';    
     button.id = 'new-game';
-    button.class = 'button controll';
+    button.class = 'button control';
     button.innerHTML = 'New Game';
     
     var that = this;
@@ -226,7 +216,7 @@ BrowserView.prototype.createButtons = function() {
 };
 
 /**
- * Generate controll buttons
+ * Generate control buttons
  */
 BrowserView.prototype.createMineButton = function() {
     
@@ -234,7 +224,7 @@ BrowserView.prototype.createMineButton = function() {
     
     button.type = 'button';    
     button.id = 'show-mines';
-    button.class = 'button controll';
+    button.class = 'button control';
     button.innerHTML = 'Show mines';
     
     var that = this;
