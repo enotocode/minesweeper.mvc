@@ -5,6 +5,7 @@ module.exports = MinesweeperGame;
 
 // Dependencies
 var GameEvent = require('./GameEvent');
+var CellEvent = require('./CellEvent');
 var EventDispatcher = require('./EventDispatcher');
 var Cell = require('./Cell');
 
@@ -60,16 +61,16 @@ MinesweeperGame.prototype.initDictionaries = function() {
  * @param {number} mines - Quantity of creating mines
  * @property {Cell} cell - First opened cell
  */
-MinesweeperGame.prototype.digMines = function(mines, cell) {
+MinesweeperGame.prototype.digMines = function(mines, initx, inity) {
 
     var i = 0;
 
     do {
         var x = random(0, 9);
         var y = random(0, 9);
-        var cellIsMined = this.isCellMined(new Cell(x, y));
+        var cellIsMined = this.isCellMined(x, y);
 
-        if (x != cell.x || y != cell.y && !cellIsMined) {
+        if (x != initx || y != inity && !cellIsMined) {
             this._cells[x][y].mined = true;
             i++;
         }
@@ -95,22 +96,23 @@ MinesweeperGame.prototype.requestStatus = function() {
 
 /**
  * Check is cell open
- * @param {Cell} cell - Coordinates of a cell
+ * @param {number} x - X coordinate of a cell
+ * @param {number} y - Y coordinate of a cell
  * @return {Boolean} - True in case the cell is open, false otherwise
  */
-MinesweeperGame.prototype.isCellOpen = function(cell) {
+MinesweeperGame.prototype.isCellOpen = function(x, y) {
 
-    return this._cells[cell.x][cell.y].opened;
+    return this._cells[x][y].opened;
 }
 
-/**
+/**k
  * Search mine at the cell
  * @param {Cell} cell - Coordinates of a cell
  * @return {Boolean} - True in case the cell is mined, false otherwise
  */
-MinesweeperGame.prototype.isCellMined = function(cell) {
+MinesweeperGame.prototype.isCellMined = function(x, y) {
 
-    return this._cells[cell.x][cell.y].mined;
+    return this._cells[x][y].mined;
 }
 
 /**
@@ -118,9 +120,9 @@ MinesweeperGame.prototype.isCellMined = function(cell) {
  * @param {Cell} celll - Coordinates of a cell
  * @return {?number} - Quantity of mines
  */
-MinesweeperGame.prototype.getMinesQuantity = function(cell) {
+MinesweeperGame.prototype.getMinesQuantity = function(x, y) {
 
-    return this._cells[cell.x][cell.y].surroundingMines;
+    return this._cells[x][y].surroundingMines;
 }
 
 /**
@@ -128,14 +130,14 @@ MinesweeperGame.prototype.getMinesQuantity = function(cell) {
  * @param {Cell} celll - Coordinates of a cell
  * @return {number} mines - Quantity of mines
  */
-MinesweeperGame.prototype.countSurroundingMines = function(cell) {
+MinesweeperGame.prototype.countSurroundingMines = function(x, y) {
 
     // Get neighbors cells
-    var neighborsCells = this.getNeighbors(cell, false);
+    var neighborsCells = this.getNeighbors(x, y, false);
     var mines = 0;
 
     for (var i = 0; i < neighborsCells.length; i++) {
-        if (this.isCellMined(neighborsCells[i])) {
+        if (this.isCellMined(neighborsCells[i].x, neighborsCells[i].y)) {
             mines++;
         }
     }
@@ -149,49 +151,49 @@ MinesweeperGame.prototype.countSurroundingMines = function(cell) {
  * @param {Boolean} cross - Select vertical & horizontal cells only (except corner's cell)
  * @return {Cell} cells - Neighbors of the cell
  */
-MinesweeperGame.prototype.getNeighbors = function(cell, cross) {
+MinesweeperGame.prototype.getNeighbors = function(initX, initY, cross) {
 
     var cells = [];
 
     // Coordinates of first neighbor
-    var x = cell.x - 1;
-    var y = cell.y - 1;
+    var neibX = initX - 1;
+    var neibY = initY - 1;
 
     // Quantity of cells from top left cell 
     var endx = 3;
     var endy = 3;
 
     // Limit coordinates by left and top field's borders
-    if (x === -1) {
-        x = 0;
+    if (neibX === -1) {
+        neibX = 0;
         endx = 2;
     }
-    if (y === -1) {
-        y = 0;
+    if (neibY === -1) {
+        neibY = 0;
         endy = 2;
     }
 
     // Limit quantity of cells by right and bottom field's borders
-    if (x === 8) {
+    if (neibX === 8) {
         endx = 2;
     }
-    if (y === 8) {
+    if (neibY === 8) {
         endy = 2;
     }
 
     // Generate neighbor cells
     for (var i = 0; i < endx; i++) {
         for (var j = 0; j < endy; j++) {
-            var cellx = x + i;
-            var celly = y + j;
-            var neighborCell = new Cell(cellx, celly);
+            var cellx = neibX + i;
+            var celly = neibY + j;
+            var neighborCell = { 'x': cellx, 'y': celly};
             cells.push(neighborCell);
         }
     }
 
     // Excluding cell itself from cell's neighbor 
     for (var i = 0; i < cells.length; i++) {
-        if (cells[i].x == cell.x && cells[i].y == cell.y) {
+        if (cells[i].neibX == initX && cells[i].neibY == initY) {
             cells.splice(i, 1);
             break;
         }
@@ -200,7 +202,7 @@ MinesweeperGame.prototype.getNeighbors = function(cell, cross) {
     // Excluding diagonals cells
     if (cross === true) {
         for (var i = 0; i < cells.lenght; i++) {
-            if (cells[i].x - cell.x === cells[y] - cell.y) {
+            if (cells[i].neibX - initX === cells[i].neibY - initY) {
                 cells.splice(i, 1);
             }
         }
@@ -213,27 +215,27 @@ MinesweeperGame.prototype.getNeighbors = function(cell, cross) {
  * Set a flag
  * @param {Cell} cell - Coordinates of a cell
  */
-MinesweeperGame.prototype.setFlag = function(cell) {
+MinesweeperGame.prototype.setFlag = function(x, y) {
 
-    if (this.isCellOpen(cell)) {
+    if (this.isCellOpen(x, y)) {
         return;
     }
 
-    this._cells[cell.x][cell.y].flagged = true;
-    this.eventDispatcher.dispatchEvent(new GameEvent(MinesweeperGame.EVENT_CELL_MARKED, cell));
+    this._cells[x][y].flagged = true;
+    this.eventDispatcher.dispatchEvent(new CellEvent(MinesweeperGame.EVENT_CELL_MARKED, x, y));
 }
 
 /**
  * Toggle a flag
  * @param {Cell} cell - Coordinates of a cell
  */
-MinesweeperGame.prototype.switchFlag = function(cell) {
+MinesweeperGame.prototype.switchFlag = function(x, y) {
 
-    if (this.isCellFlagged(cell)) {
-        this.unsetFlag(cell);
+    if (this.isCellFlagged(x, y)) {
+        this.unsetFlag(x, y);
 
     } else {
-        this.setFlag(cell);
+        this.setFlag(x, y);
     }
 }
 
@@ -241,10 +243,10 @@ MinesweeperGame.prototype.switchFlag = function(cell) {
  * Unset a flag
  * @param {Cell} cell - Target cell
  */
-MinesweeperGame.prototype.unsetFlag = function(cell) {
+MinesweeperGame.prototype.unsetFlag = function(x, y) {
 
-    this._cells[cell.x][cell.y].flagged = false;
-    this.eventDispatcher.dispatchEvent(new GameEvent(MinesweeperGame.EVENT_CELL_UNMARKED, cell));
+    this._cells[x][y].flagged = false;
+    this.eventDispatcher.dispatchEvent(new CellEvent(MinesweeperGame.EVENT_CELL_UNMARKED, x, y));
 }
 
 /**
@@ -252,9 +254,9 @@ MinesweeperGame.prototype.unsetFlag = function(cell) {
  * @param {Cell} cell - Searching cell
  * @returns {Boolean} - True in case cell is flagged
  */
-MinesweeperGame.prototype.isCellFlagged = function(cell) {
+MinesweeperGame.prototype.isCellFlagged = function(x, y) {
 
-    return this._cells[cell.x][cell.y].flagged;
+    return this._cells[x][y].flagged;
 }
 
 /**
@@ -263,22 +265,22 @@ MinesweeperGame.prototype.isCellFlagged = function(cell) {
  * @param {Boolean} recursion - True if the function called in recursion
  * @return {Boolean} - False in case cell is already opened 
  */
-MinesweeperGame.prototype.openCell = function(cell, recursion) {
+MinesweeperGame.prototype.openCell = function(x, y, recursion) {
 
     // Start the game
     // TODO check status
     if (this._openedCellsCount == 0) {
         this.initDictionaries();
-        this.digMines(12, cell);
+        this.digMines(12, x, y);
         this.updateGameStatus(MinesweeperGame.STATUS_PLAYING);
     }
 
-    if (this.isCellOpen(cell) || this.isCellFlagged(cell)) {
+    if (this.isCellOpen(x, y) || this.isCellFlagged(x, y)) {
         return false;
     }
 
     // Change game status in case of mine detonating
-    if (this.isCellMined(cell)) {
+    if (this.isCellMined(x, y)) {
         if (recursion !== true) {
             this.lose()
             return false
@@ -287,15 +289,15 @@ MinesweeperGame.prototype.openCell = function(cell, recursion) {
     }
 
     // Add cell to openCells
-    this._cells[cell.x][cell.y].opened = true;
+    this._cells[x][y].opened = true;
     this._openedCellsCount++;
     
     // Counting quantity of surrounding mines
-    var surroundingMines = this.countSurroundingMines(cell);
-    this._cells[cell.x][cell.y].surroundingMines = surroundingMines;
+    var surroundingMines = this.countSurroundingMines(x, y);
+    this._cells[x][y].surroundingMines = surroundingMines;
 
     // Dispatching new eventDispatcher
-    this.eventDispatcher.dispatchEvent(new GameEvent(MinesweeperGame.EVENT_CELL_OPENED, cell));
+    this.eventDispatcher.dispatchEvent(new CellEvent(MinesweeperGame.EVENT_CELL_OPENED, x, y));
 
     // Check for winning
     if (this.isWin()) {
@@ -304,10 +306,10 @@ MinesweeperGame.prototype.openCell = function(cell, recursion) {
 
     if (surroundingMines == 0) {
         // Gather cell's neighbors and launch recursion
-        var neighbors = this.getNeighbors(cell, true);
+        var neighbors = this.getNeighbors(x, y, true);
 
         for (var i = 0; i < neighbors.length; i++) {
-            this.openCell(neighbors[i], true);
+            this.openCell(neighbors[i].x, neighbors[i].y, true);
         }
     }
 
@@ -346,7 +348,7 @@ MinesweeperGame.prototype.getMines = function() {
         for (var y = 0; y < 10; y++) {
             
             if (this._cells[x][y].mined) {            
-                minedCells.push(new Cell(x, y));
+                minedCells.push({'x': x, 'y': y});
             }
         }
     }
