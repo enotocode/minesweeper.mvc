@@ -9,7 +9,6 @@ var CellEvent = require('./CellEvent');
 var ViewHelper = require('./ViewHelper');    
 var EventDispatcher = require('./EventDispatcher');
 var MinesweeperGame = require('./MinesweeperGame');
-//var Cell = require('./Cell');
 
 /**
  * Browser View of MinesweeperGame
