@@ -10,7 +10,7 @@ module.exports = StatusEvent;
  * @param   {string} type - One of the GameEvent constant denoting game's event
  * @param   {string} status - Game status
  */
-function StatusEvent(type) {
+function StatusEvent(type, status) {
     this.type = type;
     this.status = status;
 }
