@@ -8,7 +8,7 @@ var GameEvent = require('./GameEvent');
 var ViewHelper = require('./ViewHelper');    
 var EventDispatcher = require('./EventDispatcher');
 var MinesweeperGame = require('./MinesweeperGame');
-var Cell = require('./Cell');
+//var Cell = require('./Cell');
 
 /**
  * Browser View of MinesweeperGame
@@ -49,7 +49,7 @@ BrowserView.prototype.attach = function() {
     var that = this;
     
     this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_OPENED, function (status, cell) {
-        that.openCell(status, cell); 
+        that.openCell(cell.x, cell.y); 
     });
     this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, function (type, status) {
         that.updateGameStatus(status); 
@@ -98,12 +98,12 @@ BrowserView.prototype.updateGameStatus = function(status){
  * @param {constant} status - MinesweeperGame's class constant designating cell's status
  * @param {({x:number, y:number}|Object.<Cell>)} cell - Coordinates of element
  */
-BrowserView.prototype.openCell = function(status, cell){
+BrowserView.prototype.openCell = function(x, y){
     
-    var targetCell = this.field.rows[cell.y].cells[cell.x];
+    var targetCell = this.field.rows[y].cells[x];
     
     ViewHelper.addClass(targetCell, 'CELL_OPENED');
-    targetCell.innerHTML = this._game.getMinesQuantity(cell);
+    targetCell.innerHTML = this._game.getMinesQuantity(x, y);
     
 };
 
@@ -111,9 +111,9 @@ BrowserView.prototype.openCell = function(status, cell){
  * Set flag to cel by add class attribute 
  * @param {Cell} cell - Target cell
  */
-BrowserView.prototype.setFlag = function(cell){
+BrowserView.prototype.setFlag = function(x, y){
       
-    var targetCell = this.field.rows[cell.y].cells[cell.x];
+    var targetCell = this.field.rows[y].cells[x];
     ViewHelper.addClass(targetCell, 'CELL_MARKED');
 };
 
@@ -121,9 +121,9 @@ BrowserView.prototype.setFlag = function(cell){
  * Unset flag to cel by removing class attribute 
  * @param {Cell} cell - Target cell
  */
-BrowserView.prototype.unsetFlag = function(cell){
+BrowserView.prototype.unsetFlag = function(x, y){
      
-    var targetCell = this.field.rows[cell.y].cells[cell.x];    
+    var targetCell = this.field.rows[y].cells[x];    
     ViewHelper.removeClass(targetCell, 'CELL_MARKED');    
 };
 
@@ -162,7 +162,9 @@ BrowserView.prototype.createField = function() {
     
     ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(targetTD) {
         
-        var cell = new Cell(targetTD.cellIndex, targetTD.parentElement.rowIndex);
+        var cell = {};
+        cell.x = targetTD.cellIndex;
+        cell.y = targetTD.parentElement.rowIndex;
             
         that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_CELL_CLICK_LEFT, cell) );
         
@@ -170,7 +172,9 @@ BrowserView.prototype.createField = function() {
     
     ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(targetTD) {
         
-        var cell = new Cell(targetTD.cellIndex, targetTD.parentElement.rowIndex);
+        var cell = {};
+        cell.x = targetTD.cellIndex;
+        cell.y = targetTD.parentElement.rowIndex;
             
         that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_CELL_CLICK_RIGHT, cell) );
         
