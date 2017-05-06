@@ -13,7 +13,8 @@ var EventDispatcher = require('./EventDispatcher');
  * @property {eventDispatcher} eventDispatcher - Object of EventDispatcher
  */
 function ModalView() {
-
+    
+    this._model = null;
     this._modalWindow = undefined;   
     this.eventDispatcher = new EventDispatcher();
     
@@ -69,7 +70,7 @@ ModalView.prototype.createButtons = function() {
     
     button.type = 'button';    
     button.id = 'modal-new-game';
-    button.class = 'button controll';
+    button.class = 'button control';
     button.innerHTML = 'New Game';
     
     var that = this;
