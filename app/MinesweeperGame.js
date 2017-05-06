@@ -6,6 +6,7 @@ module.exports = MinesweeperGame;
 // Dependencies
 var GameEvent = require('./GameEvent');
 var CellEvent = require('./CellEvent');
+var StatusEvent = require('./StatusEvent');
 var EventDispatcher = require('./EventDispatcher');
 var Cell = require('./Cell');
 
@@ -40,7 +41,7 @@ MinesweeperGame.EVENT_CELL_OPENED = 'EVENT_CELL_OPENED';
 MinesweeperGame.EVENT_CELL_MARKED = 'EVENT_CELL_MARKED';
 MinesweeperGame.EVENT_CELL_UNMARKED = 'EVENT_CELL_UNMARKED';
 MinesweeperGame.EVENT_GAME_RESTART = 'EVENT_GAME_RESTART';
-MinesweeperGame.EVENT_GAME_OVER = 'EVENT_GAME_OVER';
+//MinesweeperGame.EVENT_GAME_OVER = 'EVENT_GAME_OVER';
 MinesweeperGame.EVENT_UPDATE_GAME_STATUS = 'EVENT_UPDATE_GAME_STATUS';
 
 
@@ -324,7 +325,7 @@ MinesweeperGame.prototype.restart = function() {
     this._cells = [];
     this._openedCellsCount = 0;
 
-    this.eventDispatcher.dispatchEvent(new GameEvent(MinesweeperGame.EVENT_GAME_RESTART, this));
+    this.eventDispatcher.dispatchEvent(new GameEvent(MinesweeperGame.EVENT_GAME_RESTART));
     this.updateGameStatus(MinesweeperGame.STATUS_PLAYING);
 }
 
@@ -332,9 +333,10 @@ MinesweeperGame.prototype.restart = function() {
  * Lose the game
  */
 MinesweeperGame.prototype.lose = function() {
-
-    this.eventDispatcher.dispatchEvent(new GameEvent(MinesweeperGame.EVENT_GAME_OVER, this));
+    
     this.updateGameStatus(MinesweeperGame.STATUS_LOSE);
+    //this.eventDispatcher.dispatchEvent(new StatusEvent(MinesweeperGame.STATUS_LOSE, this));
+    
 }
 
 /**
@@ -376,6 +378,6 @@ MinesweeperGame.prototype.isWin = function() {
 MinesweeperGame.prototype.updateGameStatus = function(status) {
 
     this.gameStatus = status;
-    this.eventDispatcher.dispatchEvent(new GameEvent(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, status));
+    this.eventDispatcher.dispatchEvent(new StatusEvent(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, status));
 
 }
