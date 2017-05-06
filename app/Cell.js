@@ -15,4 +15,7 @@ function Cell(x, y) {
     this.x = x;
     this.y = y;
     this.surroundingMines = null;
+    this.mined = false;
+    this.opened = false;
+    this.flagged = false;
 }

@@ -12,19 +12,24 @@ var Cell = require('./Cell');
 
 /**
  * Browser View of MinesweeperGame
+ * @argument {MinesweeperGame} game  - Model
+ * @property {MinesweeperGame} _game  - Model
  * @property {DOMElement} bar  - Link on Status bar
  * @property {DOMElement} button  - Link on Start bar
  * @property {DOMElement} mineButton  - Link on 'show mines' button
  * @property {DOMElement} field  - Text field
  * @property {EventDispatcher} eventDispatcher
  */
-function BrowserView() {
+function BrowserView(game) {
     
     this.bar = null;
     this.button = null;
     this.mineButton = null;
     this.field = null;
+    
+    this._game = game;    
     this.eventDispatcher = new EventDispatcher();
+    this.attach();
     
 };
 
@@ -37,27 +42,25 @@ BrowserView.EVENT_BUTTON_RESTART_CLICK = 'EVENT_BUTTON_RESTART_CLICK';
 BrowserView.EVENT_BUTTON_SHOW_MINES_CLICK = 'EVENT_BUTTON_SHOW_MINES_CLICK';
 
 /**
- * Attaching model and subscribing for events
- * @param {MinesweeperGame} model
+ * Attaching game and subscribing for events
  */
-BrowserView.prototype.attach = function(model) {
+BrowserView.prototype.attach = function() {
     
-    this.model = model;
     var that = this;
     
-    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_OPENED, function (status, cell) {
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_OPENED, function (status, cell) {
         that.openCell(status, cell); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, function (type, status) {
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, function (type, status) {
         that.updateGameStatus(status); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_MARKED, function (status, cell) {
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_MARKED, function (status, cell) {
         that.setFlag(cell); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_UNMARKED, function (status, cell) {
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_UNMARKED, function (status, cell) {
         that.unsetFlag(cell); 
     });
-    this.model.eventDispatcher.subscribe(MinesweeperGame.EVENT_GAME_RESTART, function () {
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_GAME_RESTART, function () {
         that.restart();
     });
 };
@@ -100,7 +103,7 @@ BrowserView.prototype.openCell = function(status, cell){
     var targetCell = this.field.rows[cell.y].cells[cell.x];
     
     ViewHelper.addClass(targetCell, 'CELL_OPENED');
-    targetCell.innerHTML = cell.surroundingMines;
+    targetCell.innerHTML = this._game.getMinesQuantity(cell);
     
 };
 
