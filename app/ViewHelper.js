@@ -4,7 +4,6 @@
 module.exports = ViewHelper;
 
 // Dependencies
-var Cell = require('./Cell');
 var eventListenerPolyfill = require('../lib/eventListener.polyfill').eventListenerPolyfill();
 
 /**
