@@ -9,8 +9,10 @@ module.exports = ButtonEvent;
  * transferring to observer when event dispatches
  * 
  * @param   {Constant} type - One of the ButtonEvent type
+ * @param   {Object} target - Target object of event
  * 
  */
-function ButtonEvent(type) {
+function ButtonEvent(type, target) {
     this.type = type;
+    this.target = target;
 }
