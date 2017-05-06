@@ -3,7 +3,6 @@
 // Export the class
 module.exports = CellEvent;
 
-
 /**
  * CellEvent store type and cell coordinates
  * transferring to observer when event dispatches
@@ -13,7 +12,7 @@ module.exports = CellEvent;
  * @param   {number} y - Y coordinate of cell
  * 
  */
-function GameEvent(type, x, y) {
+function CellEvent(type, x, y) {
     this.type = type;
     this.x = x;
     this.y = y;
