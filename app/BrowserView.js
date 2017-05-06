@@ -6,6 +6,7 @@ module.exports = BrowserView;
 // Dependencies
 var GameEvent = require('./GameEvent');
 var CellEvent = require('./CellEvent');
+var ButtonEvent = require('./ButtonEvent');
 var ViewHelper = require('./ViewHelper');    
 var EventDispatcher = require('./EventDispatcher');
 var MinesweeperGame = require('./MinesweeperGame');
@@ -51,8 +52,8 @@ BrowserView.prototype.attach = function() {
     this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_OPENED, function (event) {
         that.openCell(event.x, event.y); 
     });
-    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, function (type, status) {
-        that.updateGameStatus(status); 
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, function (event) {
+        that.updateGameStatus(event.status); 
     });
     this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_MARKED, function (event) {
         that.setFlag(event.x, event.y); 
@@ -60,8 +61,8 @@ BrowserView.prototype.attach = function() {
     this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_UNMARKED, function (event) {
         that.unsetFlag(event.x, event.y); 
     });
-    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_GAME_RESTART, function () {
-        that.restart();
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_GAME_RESTART, function (event) {
+        that.updateGameStatus(event.status); 
     });
 };
 
@@ -89,7 +90,13 @@ BrowserView.prototype.render = function() {
  * @param {String} status
  */
 BrowserView.prototype.updateGameStatus = function(status){
-    
+    if (status === MinesweeperGame.STATUS_WIN) {
+        // freeze
+        // modal win
+    } else if (status === MinesweeperGame.STATUS_LOSE) {
+        // freeze
+        // modal lose
+    }
     this.bar.innerHTML = status;    
 };
 
@@ -130,7 +137,7 @@ BrowserView.prototype.unsetFlag = function(x, y){
 /**
  * Re-creating game field
  */
-BrowserView.prototype.restart = function() {
+BrowserView.prototype.reload = function() {
     
     var newField = this.createField();
     this.field.innerHTML = newField.innerHTML;
@@ -212,7 +219,7 @@ BrowserView.prototype.createButtons = function() {
     
     button.onclick = function(event){
         var target = event.target;
-        that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_BUTTON_RESTART_CLICK, target) );
+        that.eventDispatcher.dispatchEvent( new ButtonEvent(BrowserView.EVENT_BUTTON_RESTART_CLICK, target) );
         console.log('restart');
     };
     
@@ -234,7 +241,7 @@ BrowserView.prototype.createMineButton = function() {
     
     button.onclick = function(event){
         var target = event.target;
-        that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_BUTTON_SHOW_MINES_CLICK, target) );
+        that.eventDispatcher.dispatchEvent( new ButtonEvent(BrowserView.EVENT_BUTTON_SHOW_MINES_CLICK, target) );
     };
     
     return button;
