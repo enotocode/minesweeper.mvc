@@ -5,6 +5,7 @@ module.exports = BrowserView;
 
 // Dependencies
 var GameEvent = require('./GameEvent');
+var CellEvent = require('./CellEvent');
 var ViewHelper = require('./ViewHelper');    
 var EventDispatcher = require('./EventDispatcher');
 var MinesweeperGame = require('./MinesweeperGame');
@@ -48,17 +49,17 @@ BrowserView.prototype.attach = function() {
     
     var that = this;
     
-    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_OPENED, function (status, cell) {
-        that.openCell(cell.x, cell.y); 
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_OPENED, function (event) {
+        that.openCell(event.x, event.y); 
     });
     this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, function (type, status) {
         that.updateGameStatus(status); 
     });
-    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_MARKED, function (status, cell) {
-        that.setFlag(cell); 
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_MARKED, function (event) {
+        that.setFlag(event.x, event.y); 
     });
-    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_UNMARKED, function (status, cell) {
-        that.unsetFlag(cell); 
+    this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_CELL_UNMARKED, function (event) {
+        that.unsetFlag(event.x, event.y); 
     });
     this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_GAME_RESTART, function () {
         that.restart();
@@ -162,21 +163,19 @@ BrowserView.prototype.createField = function() {
     
     ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(targetTD) {
         
-        var cell = {};
-        cell.x = targetTD.cellIndex;
-        cell.y = targetTD.parentElement.rowIndex;
+        var x = targetTD.cellIndex;
+        var y = targetTD.parentElement.rowIndex;
             
-        that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_CELL_CLICK_LEFT, cell) );
+        that.eventDispatcher.dispatchEvent( new CellEvent(BrowserView.EVENT_CELL_CLICK_LEFT, x, y) );
         
     }, 1 );
     
     ViewHelper.addDelegateListener(table, 'TD', 'mousedown', function(targetTD) {
         
-        var cell = {};
-        cell.x = targetTD.cellIndex;
-        cell.y = targetTD.parentElement.rowIndex;
+        var x = targetTD.cellIndex;
+        var y = targetTD.parentElement.rowIndex;
             
-        that.eventDispatcher.dispatchEvent( new GameEvent(BrowserView.EVENT_CELL_CLICK_RIGHT, cell) );
+        that.eventDispatcher.dispatchEvent( new CellEvent(BrowserView.EVENT_CELL_CLICK_RIGHT, x, y) );
         
     }, 3 );
     
