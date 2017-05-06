@@ -44,7 +44,7 @@ EventDispatcher.prototype.dispatchEvent = function(event){
         
         for (var i = 0; i < listeners.length; i++) { 
        
-            listeners[i](type, target);        
+            listeners[i](event);        
         }        
     }
  }
