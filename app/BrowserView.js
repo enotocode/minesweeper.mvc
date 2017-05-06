@@ -62,7 +62,7 @@ BrowserView.prototype.attach = function() {
         that.unsetFlag(event.x, event.y); 
     });
     this._game.eventDispatcher.subscribe(MinesweeperGame.EVENT_GAME_RESTART, function (event) {
-        that.updateGameStatus(event.status); 
+        that.reload(); 
     });
 };
 
