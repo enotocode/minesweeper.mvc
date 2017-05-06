@@ -4,7 +4,6 @@
 module.exports = BrowserView;
 
 // Dependencies
-var GameEvent = require('./GameEvent');
 var CellEvent = require('./CellEvent');
 var ButtonEvent = require('./ButtonEvent');
 var ViewHelper = require('./ViewHelper');    
