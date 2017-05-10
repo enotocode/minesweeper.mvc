@@ -4,8 +4,10 @@
 module.exports = ModalView;
 
 // Dependencies
-var GameEvent = require('./GameEvent');
+var ButtonEvent = require('./GameEvent');
 var EventDispatcher = require('./EventDispatcher');
+var ViewHelper = require('./ViewHelper');
+
 
 /**
  * Modal view
@@ -14,42 +16,57 @@ var EventDispatcher = require('./EventDispatcher');
  */
 function ModalView() {
     
-    this._model = null;
-    this._modalWindow = undefined;   
+    this._modalWindow = null;
     this.eventDispatcher = new EventDispatcher();
     
 }
 
 /**
- * Attaching model and subscribing for events
- * @param   {MinesweeperGame} model The game model
+ * Events
  */
-ModalView.prototype.attach = function(model) {
+ModalView.BUTTON_RESTART_CLICK = 'BUTTON_RESTART_CLICK';
+
+/**
+ * Show DOM object with modal window
+ */
+ModalView.prototype.show = function () {
+
+    ViewHelper.removeClass(this._modalWindow, 'invisible');    
+}
+
+/**
+ * Hide DOM object with modal window
+ */
+ModalView.prototype.hide = function () {
     
-    this._model = model;
-    var that = this;
-    
-    this._model.eventDispatcher.subscribe( GameEvent.GAME_OVER, function() {
-        that.render();
-    });
+    ViewHelper.addClass(this._modalWindow, 'invisible');
+
 }
 
 /**
  * Render modal window
+ *
+ * @returns {DOMObject} this._modalWindow  - Object with modal window
  */
-ModalView.prototype.render = function() {
+ModalView.prototype.run = function() {
 
-    var modalWindow = this.createWindow();    
+    var modalWindow = this.createWindow();
     var button = this.createButtons();
     
-    modalWindow.appendChild(button);    
-   
-    this.insertElement(modalWindow);
-    
+    modalWindow.appendChild(button);   
     this._modalWindow = modalWindow;
-   
+    
+    // Invisible by defaults
+    this.hide();
+    
+    return this._modalWindow;
 }
 
+/**
+ * Creating main window
+ * 
+ * @returns {DOMObject} Modal window
+ */
 ModalView.prototype.createWindow = function() {
     
     var window = document.createElement('div');
@@ -62,7 +79,9 @@ ModalView.prototype.createWindow = function() {
 }
 
 /**
- * Generate control button
+ * Creating control button
+ * 
+ * @returns {DOMObject} Button with onclick event listener
  */
 ModalView.prototype.createButtons = function() {
     
@@ -78,23 +97,8 @@ ModalView.prototype.createButtons = function() {
     button.onclick = function(event){
         
         var target = event.target;
-        that.eventDispatcher.dispatchEvent( new GameEvent(GameEvent.RESTART, target) );
-        
-        // Delete itself from DOM
-        var body = document.getElementsByTagName('body')[0];
-        body.removeChild(that._modalWindow);
-        
+        that.eventDispatcher.dispatchEvent( new ButtonEvent(ModalView.BUTTON_RESTART_CLICK, target) );
     };
     
     return button;
-};
-
-/**
- * Injection element in DOM
- * @argument {DONElement} element 
- */
-ModalView.prototype.insertElement = function (element) {
-    var parentElement = document.getElementsByTagName('body')[0];
-    console.log(parentElement);
-    parentElement.appendChild(element);
 };
