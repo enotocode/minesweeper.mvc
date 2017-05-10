@@ -29,3 +29,9 @@
           right: -20%;
           position: relative;
 }
+.visible {
+    display: inline;
+}
+.invisible {
+    display: none;
+}
