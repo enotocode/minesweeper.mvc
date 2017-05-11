@@ -56,7 +56,7 @@ MinesweeperGame.prototype.initDictionaries = function() {
         
         for (var j = 0; j < 10; j++) {
             
-            this._cells[i][j] = new Cell(j, i);
+            this._cells[i][j] = new Cell();
         }
     }
 }
