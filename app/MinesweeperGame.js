@@ -49,9 +49,13 @@ MinesweeperGame.EVENT_UPDATE_GAME_STATUS = 'EVENT_UPDATE_GAME_STATUS';
  * Create and fill dictionaries with initial values
  */
 MinesweeperGame.prototype.initDictionaries = function() {
+    
     for (var i = 0; i < 10; i++) {
+        
         this._cells[i] = []
+        
         for (var j = 0; j < 10; j++) {
+            
             this._cells[i][j] = new Cell(j, i);
         }
     }
@@ -72,14 +76,17 @@ MinesweeperGame.prototype.digMines = function(mines, initx, inity) {
         var cellIsMined = this.isCellMined(x, y);
 
         if (x != initx || y != inity && !cellIsMined) {
+            
             this._cells[x][y].mined = true;
             i++;
         }
+        
     } while (i < mines);
 
     // Randomize coordinates
 
     function random(min, max) {
+        
         var rand = min + Math.random() * (max + 1 - min);
         rand = Math.floor(rand);
         return rand;
@@ -138,7 +145,9 @@ MinesweeperGame.prototype.countSurroundingMines = function(x, y) {
     var mines = 0;
 
     for (var i = 0; i < neighborsCells.length; i++) {
+        
         if (this.isCellMined(neighborsCells[i].x, neighborsCells[i].y)) {
+            
             mines++;
         }
     }
@@ -184,7 +193,9 @@ MinesweeperGame.prototype.getNeighbors = function(initX, initY, cross) {
 
     // Generate neighbor cells
     for (var i = 0; i < endx; i++) {
+        
         for (var j = 0; j < endy; j++) {
+            
             var cellx = neibX + i;
             var celly = neibY + j;
             var neighborCell = { 'x': cellx, 'y': celly};
@@ -194,7 +205,9 @@ MinesweeperGame.prototype.getNeighbors = function(initX, initY, cross) {
 
     // Excluding cell itself from cell's neighbor 
     for (var i = 0; i < cells.length; i++) {
+        
         if (cells[i].neibX == initX && cells[i].neibY == initY) {
+            
             cells.splice(i, 1);
             break;
         }
@@ -202,8 +215,11 @@ MinesweeperGame.prototype.getNeighbors = function(initX, initY, cross) {
 
     // Excluding diagonals cells
     if (cross === true) {
+        
         for (var i = 0; i < cells.lenght; i++) {
-            if (cells[i].neibX - initX === cells[i].neibY - initY) {
+            
+            if (cells[i].neibX - initX === cells[i].neibY - initY) 
+                
                 cells.splice(i, 1);
             }
         }
@@ -217,8 +233,12 @@ MinesweeperGame.prototype.getNeighbors = function(initX, initY, cross) {
  * @param {Cell} cell - Coordinates of a cell
  */
 MinesweeperGame.prototype.setFlag = function(x, y) {
+    
+    // If game is over it's time to go outside
+    if (this.isOver()) return false;
 
     if (this.isCellOpen(x, y)) {
+        
         return;
     }
 
@@ -233,9 +253,11 @@ MinesweeperGame.prototype.setFlag = function(x, y) {
 MinesweeperGame.prototype.switchFlag = function(x, y) {
 
     if (this.isCellFlagged(x, y)) {
+        
         this.unsetFlag(x, y);
 
     } else {
+        
         this.setFlag(x, y);
     }
 }
@@ -245,6 +267,9 @@ MinesweeperGame.prototype.switchFlag = function(x, y) {
  * @param {Cell} cell - Target cell
  */
 MinesweeperGame.prototype.unsetFlag = function(x, y) {
+    
+    // If game is over it's time to go outside
+    if (this.isOver()) return false;
 
     this._cells[x][y].flagged = false;
     this.eventDispatcher.dispatchEvent(new CellEvent(MinesweeperGame.EVENT_CELL_UNMARKED, x, y));
@@ -267,22 +292,30 @@ MinesweeperGame.prototype.isCellFlagged = function(x, y) {
  * @return {Boolean} - False in case cell is already opened 
  */
 MinesweeperGame.prototype.openCell = function(x, y, recursion) {
-
+    
+    // If game is over it's time to go outside
+    if (this.isOver()) return false;
+    console.log(this.isOver());
+    
     // Start the game
     // TODO check status
     if (this._openedCellsCount == 0) {
+        
         this.initDictionaries();
         this.digMines(12, x, y);
         this.updateGameStatus(MinesweeperGame.STATUS_PLAYING);
     }
 
     if (this.isCellOpen(x, y) || this.isCellFlagged(x, y)) {
+        
         return false;
     }
 
     // Change game status in case of mine detonating
     if (this.isCellMined(x, y)) {
+        
         if (recursion !== true) {
+            
             this.lose()
             return false
         }
@@ -310,6 +343,7 @@ MinesweeperGame.prototype.openCell = function(x, y, recursion) {
         var neighbors = this.getNeighbors(x, y, true);
 
         for (var i = 0; i < neighbors.length; i++) {
+            
             this.openCell(neighbors[i].x, neighbors[i].y, true);
         }
     }
@@ -347,9 +381,11 @@ MinesweeperGame.prototype.getMines = function() {
     var minedCells = [];
     
     for (var x = 0; x < 10; x++) {
+        
         for (var y = 0; y < 10; y++) {
             
-            if (this._cells[x][y].mined) {            
+            if (this._cells[x][y].mined) {
+                
                 minedCells.push({'x': x, 'y': y});
             }
         }
@@ -365,8 +401,10 @@ MinesweeperGame.prototype.getMines = function() {
 MinesweeperGame.prototype.isWin = function() {
 
     if (this._openedCellsCount == 100 - 12) {
+        
         this.updateGameStatus(MinesweeperGame.STATUS_WIN);
-        return true;
+        return true
+    
     }
     return false;
 }
@@ -380,4 +418,19 @@ MinesweeperGame.prototype.updateGameStatus = function(status) {
     this.gameStatus = status;
     this.eventDispatcher.dispatchEvent(new StatusEvent(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, status));
 
+}
+/**
+ * Is game over
+ * 
+ * @returns {Boolean} - True in case gamer lose or win
+ */
+MinesweeperGame.prototype.isOver = function() {    
+   
+    if (this.gameStatus === MinesweeperGame.STATUS_LOSE ||
+        this.gameStatus === MinesweeperGame.STATUS_WIN) {
+        
+        return true;
+    
+    }         
+    return false;
 }
