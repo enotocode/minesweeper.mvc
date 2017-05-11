@@ -295,7 +295,6 @@ MinesweeperGame.prototype.openCell = function(x, y, recursion) {
     
     // If game is over it's time to go outside
     if (this.isOver()) return false;
-    console.log(this.isOver());
     
     // Start the game
     // TODO check status
