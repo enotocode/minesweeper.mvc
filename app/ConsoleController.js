@@ -32,19 +32,18 @@ function ConsoleController(model) {
     this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_CELL_OPENED, function (event) {
         that.updateCellStatus(event.type, event.x, event.y);
     });
-    //this._model.eventDispatcher.subscribe(GameEvent.UPDATE_GAME_STATUS, function (type, status) {
-    //    that.updateGameStatus(status); 
-    //});
+    this._model.eventDispatcher.subscribe(MinesweeperGame.EVENT_UPDATE_GAME_STATUS, function (event) {
+        that.printStatus(event.status);
+    });
     this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_CELL_MARKED, function (event) {
         that.updateCellStatus(event.type, event.x, event.y);
     });
-    this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_CELL_UNMARKED, function (status, cell) {
+    this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_CELL_UNMARKED, function (event) {
         that.updateCellStatus(event.type, event.x, event.y);
     });
     this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_GAME_RESTART, function () {
         that.redraw();
-    });    
-    
+    });        
 };
 
 
@@ -170,6 +169,33 @@ ConsoleController.prototype.updateCellStatus = function(status, x, y){
     this._field = field.substring(0, charNumber) + newChar + field.substring(charNumber + 1);    
    
     this.show();
+        
+    this.printStatus(status, x, y);
+    
+}
+ConsoleController.prototype.printStatus = function (status, x, y) {
+    
+    // Cell events
+    if (status === MinesweeperGame.EVENT_CELL_MARKED) {
+        console.log('Cell: {' + (x+1) + ', ' + (y+1) + '} is flagged');
+    }
+    if (status === MinesweeperGame.EVENT_CELL_OPENED) {
+        console.log('Cell: {' + (x+1) + ', ' + (y+1) + '} is opened');
+    }
+    if (status === MinesweeperGame.EVENT_CELL_UNMARKED) {
+        console.log('Cell: {' + (x+1) + ', ' + (y+1) + '} is unflagged');
+    }
+    
+    // Game events 
+    if (status === MinesweeperGame.STATUS_LOSE) {
+        console.log('WASTED');
+    }
+    if (status === MinesweeperGame.STATUS_WIN) {
+        console.log('YOU WIN, LUCKY!');
+    }
+    if (status === MinesweeperGame.STATUS_PLAYING) {
+        console.log('LET THE FIGHT BEGIN!');
+    }
 }
 
 /**
@@ -213,6 +239,7 @@ ConsoleController.prototype.createField = function() {
  * Redraw field
  */
 ConsoleController.prototype.redraw = function() {
+    
     this.createField();
     this.show();
 }
