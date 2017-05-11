@@ -19,6 +19,7 @@ var browserViewController = new BrowserViewController(browserView, mswprGame);
 browserView.render();
 
 // Create console Controller
-var game = new ConsoleController();
-game.attach(mswprGame);
+var game = new ConsoleController(mswprGame);
 
+// Export ConsoleController for browser console access
+module.exports = game;
