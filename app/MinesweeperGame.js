@@ -218,14 +218,14 @@ MinesweeperGame.prototype.getNeighbors = function(initX, initY, cross) {
         
         for (var i = 0; i < cells.lenght; i++) {
             
-            if (cells[i].neibX - initX === cells[i].neibY - initY) 
+            if (cells[i].neibX - initX === cells[i].neibY - initY) {
                 
                 cells.splice(i, 1);
             }
         }
     }
     //console.log(cells);
-    return cells
+    return cells;
 }
 
 /**
