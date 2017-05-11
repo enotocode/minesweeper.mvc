@@ -7,7 +7,7 @@ module.exports = {
     entry: "./app/initGame",
     output: {
         filename: "./build.js",
-        library: "MinesweeperGame"
+        library: "Game"
     },
     
     watch: NODE_ENV == 'development',
