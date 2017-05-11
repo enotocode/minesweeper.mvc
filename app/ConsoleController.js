@@ -5,6 +5,7 @@ module.exports = ConsoleController;
 
 // Dependencies
 var GameEvent = require('./GameEvent');
+var MinesweeperGame = require('./MinesweeperGame');
 
 /**
  * Console controller class
@@ -18,10 +19,10 @@ function ConsoleController() {
     this._field = '';
     this.charSet = {};
     
-    this.charSet[GameEvent.CELL_OPENED] = '.';
-    this.charSet[GameEvent.CELL_MINED] = '*';
-    this.charSet[GameEvent.CELL_MARKED] = 'F';
-    this.charSet[GameEvent.CELL_UNMARKED] = '+';
+    this.charSet[MinesweeperGame.EVENT_CELL_OPENED] = '.';
+    //this.charSet[MinesweeperGame.E] = '*';
+    this.charSet[MinesweeperGame.EVENT_CELL_MARKED] = 'F';
+    this.charSet[MinesweeperGame.EVENT_CELL_UNMARKED] = '+';
     
 };
 
@@ -34,21 +35,21 @@ ConsoleController.prototype.attach = function(model) {
     
     var that = this;
     
-    this._model.eventDispatcher.subscribe( GameEvent.CELL_OPENED, function (status, cell) {
-        that.updateCellStatus(status, cell);
+    this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_CELL_OPENED, function (event) {
+        that.updateCellStatus(event.type, event.x, event.y);
     });
     //this._model.eventDispatcher.subscribe(GameEvent.UPDATE_GAME_STATUS, function (type, status) {
     //    that.updateGameStatus(status); 
     //});
-    this._model.eventDispatcher.subscribe( GameEvent.CELL_MARKED, function (status, cell) {
-        that.updateCellStatus(status, cell);
+    this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_CELL_MARKED, function (event) {
+        that.updateCellStatus(event.type, event.x, event.y);
     });
-    this._model.eventDispatcher.subscribe( GameEvent.CELL_UNMARKED, function (status, cell) {
-        that.updateCellStatus(status, cell);
+    this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_CELL_UNMARKED, function (status, cell) {
+        that.updateCellStatus(event.type, event.x, event.y);
     });
-    //this._model.eventDispatcher.subscribe( GameEvent.RESTART, function () {
-    //    that.restart();
-    //});    
+    this._model.eventDispatcher.subscribe( MinesweeperGame.EVENT_GAME_RESTART, function () {
+        that.redraw();
+    });    
    
 }
 
@@ -59,11 +60,15 @@ ConsoleController.prototype.open = function(coordinates) {
     
     var cell = this.createCellFromString(coordinates);
     
-    if (coordinates) {
+    if (coordinates && this._model.openCell(cell.x, cell.y)) {
         
-        this._model.openCell(cell);
+        this._model.openCell(cell.x, cell.y);
         
+    } else {
+        
+        console.log("Can't open the cell, probably cell is already opened or flagged");
     }
+    
 }
 
 /**
@@ -75,7 +80,7 @@ ConsoleController.prototype.setFlag = function(coordinates) {
     
     if (coordinates) {
         
-        this._model.setFlag(cell);
+        this._model.setFlag(cell.x, cell.y);
         
     }
 }
@@ -89,7 +94,7 @@ ConsoleController.prototype.removeFlag = function(coordinates) {
     
     if (coordinates) {
         
-        this._model.unsetFlag(cell);
+        this._model.unsetFlag(cell.x, cell.y);
         
     }
 }
@@ -106,7 +111,7 @@ ConsoleController.prototype.resign = function() {
 /**
  *
  */
-ConsoleController.prototype.reset = function() {
+ConsoleController.prototype.restart = function() {
     
     this._model.restart();
     
@@ -139,24 +144,25 @@ ConsoleController.prototype.createCellFromString = function(string) {
       return null;
     }      
     
-    return new Cell(x, y);    
+    return {'x':x, 'y':y};    
 }
 
 /**
  * Replace character-cell in field
  */
-ConsoleController.prototype.updateCellStatus = function(status, cell){
+ConsoleController.prototype.updateCellStatus = function(status, x, y){
     
     if (this._field === "") {
        this.createField();
     }
     
-    var charNumber = cell.x * 2 + 20 * cell.y;    
+    var charNumber = x * 2 + 20 * y;    
     var newChar = this.charSet[status];    
     var field = this._field;
-    
-    if (status === GameEvent.CELL_OPENED && cell.surroundingMines !== 0) {
-        newChar = cell.surroundingMines;
+    var minesQantity = this._model.getMinesQuantity(x, y);
+
+    if (status === MinesweeperGame.EVENT_CELL_OPENED && minesQantity !== 0) {
+        newChar = minesQantity;
     }
     
     this._field = field.substring(0, charNumber) + newChar + field.substring(charNumber + 1);    
@@ -199,4 +205,9 @@ ConsoleController.prototype.createField = function() {
     
     // Save actual field in this._field
     this._field = field;
+}
+
+ConsoleController.prototype.redraw = function() {
+    this.createField();
+    this.show();
 }
