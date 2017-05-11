@@ -127,9 +127,10 @@ ConsoleController.prototype.restart = function() {
 ConsoleController.prototype.transformChessCoordinates = function(string) {
     
     var letter = ['A' ,'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-        
+    
+    // todo: validation of user inputs     
     var x = letter.indexOf(string.match("[a-zA-Z]+")[0].toUpperCase());
-    var y = string.match("\\d+")[0];
+    var y = string.match("\\d+")[0] - 1;
     
     // Show hint in console
     if (string.length < 2) {
@@ -207,6 +208,7 @@ ConsoleController.prototype.createField = function() {
     // Save actual field in this._field
     this._field = field;
 }
+
 /**
  * Redraw field
  */
