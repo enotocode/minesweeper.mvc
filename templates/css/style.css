@@ -1,37 +1,113 @@
+body {
+    font-family: open sans;
+    font-weight: 100;
+    color: lightgray;
+}
+
+button {
+    margin: 0 4px;
+}
+
+.small-button {
+    padding: .4em 1em;
+}
+
+h1 {
+    font-weight: 100;
+}
+
+h2 {
+    font-weight: 100;
+    color: black;
+}
+
+.container {
+    text-align: center;
+}
+
+.status-bar {
+    font-size: 10pt;
+}
+
 .field {
-          border: 2px solid #ccc;
-          border-radius: 4px;
-          border-collapse: collapse;
-          width: 300px;
-          height: 300px;
-        }
-        td {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ccc;
-            background-color: pink;
-        }
+    margin: auto;
+}
+
+td {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ffc053;
+    background-color: #ffc053;
+    border-radius: 4px;
+    padding: 0px;
+    color: #808080;
+    font-weight: 500;
+    text-align: center;
+}
+
 .flagged {
           /*&#9959;*/
 }
+
 .mined {
           /*&#9962;*/
           /*&#9791;*/
 }
+
+.CELL_MARKED {
+    background-color: #06da4f;
+    border: 1px solid #06da4f;
+}
+
 .CELL_OPENED {
     background-color: white;
+    border: 1px solid #e2e2e2;
 }
-.CELL_MARKED {
-          background-color: orange;
-}
+
 .CELL_MARKED:after {
-          content: "\263B";
-          right: -20%;
-          position: relative;
+    background-image: url(../img/flag-b.svg);
+    position: relative;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    content: "";
 }
-.visible {
-    display: inline;
+
+/* Modal window */
+
+.modal {
+    position: fixed;
+ /* Stay in place */
+    z-index: 1;
+ /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+ /* Full width */
+    height: 100%;
+ /* Full height */
+    overflow: auto;
+ /* Enable scroll if needed */
+    background-color: rgb(0,0,0);
+ /* Fallback color */
+    background-color: rgba(0,0,0,0.4);
+ /* Black w/ opacity */
 }
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+ /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+ /* Could be more or less, depending on screen size */
+    max-width: 300px;
+    text-align: center;
+}
+
 .invisible {
     display: none;
 }
