@@ -51,9 +51,6 @@ ModalView.prototype.hide = function () {
 ModalView.prototype.run = function() {
 
     var modalWindow = this.createWindow();
-    var button = this.createButtons();
-    
-    modalWindow.appendChild(button);   
     this._modalWindow = modalWindow;
     
     // Invisible by defaults
@@ -73,7 +70,16 @@ ModalView.prototype.createWindow = function() {
     
     window.className = "modal";
     window.id = 'modal';
-    window.innerHTML = 'Начать новую игру';
+    
+    var content = document.createElement('div');
+    
+    content.className = "modal-content";
+    content.innerHTML = '<h2>W A S T E D</h2><p>Start new game</p>';
+    
+    var button = this.createButtons();
+    
+    content.appendChild(button);       
+    window.appendChild(content);
     
     return window;    
 }
@@ -88,8 +94,7 @@ ModalView.prototype.createButtons = function() {
     var button = document.createElement('button');
     
     button.type = 'button';    
-    button.id = 'modal-new-game';
-    button.class = 'button control';
+    button.className = 'pure-button';
     button.innerHTML = 'New Game';
     
     var that = this;

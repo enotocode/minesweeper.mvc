@@ -70,7 +70,7 @@ BrowserView.prototype.attach = function() {
  */
 BrowserView.prototype.render = function() {
     
-    this.button = this.createButtons();
+    this.button = this.createStartButton();
     this.insertElement(this.button);
     
     this.mineButton = this.createMineButton();
@@ -109,7 +109,13 @@ BrowserView.prototype.openCell = function(x, y){
     var targetCell = this.field.rows[y].cells[x];
     
     ViewHelper.addClass(targetCell, 'CELL_OPENED');
-    targetCell.innerHTML = this._game.getMinesQuantity(x, y);
+    
+    var minesQuant = this._game.getMinesQuantity(x, y);
+    
+    if (minesQuant !== 0) {
+        
+        targetCell.innerHTML = minesQuant;
+    }    
     
 };
 
@@ -160,9 +166,8 @@ BrowserView.prototype.createField = function() {
     }
     
     var table = document.createElement('table');
-    table.className = "table";    
+    table.className = "field";    
     table.innerHTML = tableContent;
-    table.id = 'field';
     
     var that = this;   
     
@@ -206,12 +211,12 @@ BrowserView.prototype.showMines = function(mines) {
 /**
  * Generate control buttons
  */
-BrowserView.prototype.createButtons = function() {
+BrowserView.prototype.createStartButton = function() {
     
     var button = document.createElement('button');
     
     button.type = 'button';    
-    button.class = 'button control';
+    button.className = 'button-small pure-button';
     button.innerHTML = 'New Game';
     
     var that = this;
@@ -233,7 +238,7 @@ BrowserView.prototype.createMineButton = function() {
     var button = document.createElement('button');
     
     button.type = 'button';    
-    button.class = 'button control';
+    button.className = 'button-small pure-button';
     button.innerHTML = 'Show mines';
     
     var that = this;
@@ -253,7 +258,7 @@ BrowserView.prototype.createStatusBar = function() {
     
     var bar = document.createElement('div');    
 
-    bar.class = 'status-bar';
+    bar.className = 'status-bar';
     bar.innerHTML = 'What are you waiting for?';
     
     return bar;
